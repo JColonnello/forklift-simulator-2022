@@ -43,13 +43,16 @@ export class ScriptManager {
     }
 
     function convertKeyEvent(keyEvent: KeyboardEvent) {
-      let upperCase = keyEvent.key.toUpperCase();
-
-      if (isKey(upperCase)) {
-        return upperCase;
+      let key = keyEvent.key;
+      if (keyEvent.key.length == 1) {
+        key = key.toUpperCase();
       }
 
-      throw new Error("Could not convert key.");
+      if (isKey(key)) {
+        return key;
+      }
+
+      throw new Error(`Could not convert key ${keyEvent.key}.`);
     }
 
     document.addEventListener("keyup", (event) => {

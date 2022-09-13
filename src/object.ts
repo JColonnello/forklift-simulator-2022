@@ -28,6 +28,18 @@ export const keys = [
   "B",
   "N",
   "M",
+  ..."[{}];:\"'\\|/?.>,<~!@#$%^&*()_+",
+  ..."`1234567890-=",
+  "ArrowDown",
+  "Tab",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "Alt",
+  "Control",
+  "Shift",
+  "Enter",
+  "Backspace",
 ] as const;
 export type Key = typeof keys[number];
 
