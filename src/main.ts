@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { ForkliftScript } from "./forklift";
+import {KeyManager} from "./keyManager";
 import {Key, keys} from "./object";
 import { ScriptManager } from "./scriptManager";
 
@@ -65,7 +66,8 @@ document.addEventListener("keydown", (event) => {
 });
 
 
-scriptManager.addScript(new ForkliftScript(cube));
+scriptManager.addScript((sm) => new KeyManager(scene, sm));
+scriptManager.addScript((sm) => new ForkliftScript(cube, sm));
 
 scriptManager.dispatchInit();
 

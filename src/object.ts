@@ -1,4 +1,5 @@
 import { Object3D } from "three";
+import {ScriptManager} from "./scriptManager";
 
 export const keys = [
   "Q",
@@ -32,9 +33,11 @@ export type Key = typeof keys[number];
 
 export abstract class Script {
   object: Object3D;
+  scriptManager: ScriptManager;
 
-  constructor(object: Object3D) {
+  constructor(object: Object3D, scriptManager: ScriptManager) {
     this.object = object;
+    this.scriptManager = scriptManager;
   }
 
   update(dt: number): void {}

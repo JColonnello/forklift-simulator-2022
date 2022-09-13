@@ -1,13 +1,19 @@
+import { KeyManager } from "./keyManager";
 import { Key, Script } from "./object";
 
 export class ForkliftScript extends Script {
-  update(dt: number): void {
-    console.log("Hola");
-    //this.object.rotation.x += dt;
-    //this.object.rotation.y += dt;
+  keyManager?: KeyManager;
+
+  init(): void {
+    this.keyManager = this.scriptManager.ofType<KeyManager>(KeyManager)!;
   }
 
-  keydown(key: Key): void {
-  	console.log(key);
+  update(dt: number): void {
+    if (this.keyManager!.isKeyDown('W')) {
+      this.object.rotation.x += dt;
+      this.object.rotation.y += dt;
+    }
   }
 }
+
+
