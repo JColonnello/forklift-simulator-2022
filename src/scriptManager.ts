@@ -3,8 +3,8 @@ import { Key, keys, Script } from "./object";
 export class ScriptManager {
   scripts: Script[] = [];
 
-  addScript(scriptBuilder: (scriptManager: ScriptManager) => Script) {
-    this.scripts.push(scriptBuilder(this));
+  addScript(scriptBuilder: new (scriptManager: ScriptManager) => Script) {
+    this.scripts.push(new scriptBuilder(this));
   }
 
   removeScript(script: Script) {

@@ -35,8 +35,8 @@ window.addEventListener("resize", onWindowResize);
 let scriptManager = new ScriptManager();
 scriptManager.setupEventListeners();
 
-scriptManager.addScript((sm) => new KeyManager(scene, sm));
-scriptManager.addScript((sm) => new ForkliftScript(cube, sm));
+scriptManager.addScript(KeyManager.bind(null, scene));
+scriptManager.addScript(ForkliftScript.bind(null, cube));
 
 scriptManager.dispatchInit();
 
