@@ -33,38 +33,7 @@ function onWindowResize() {
 window.addEventListener("resize", onWindowResize);
 
 let scriptManager = new ScriptManager();
-
-document.addEventListener("pointerup", ({ x, y }) =>
-  scriptManager.dispatchPointerUp(x, y)
-);
-document.addEventListener("pointerdown", ({ x, y }) =>
-  scriptManager.dispatchPointerDown(x, y)
-);
-document.addEventListener("pointermove", ({ x, y }) =>
-  scriptManager.dispatchPointerMove(x, y)
-);
-
-function isKey(str: string): str is Key {
-  return keys.includes(str as Key);
-}
-
-function convertKeyEvent(keyEvent: KeyboardEvent) {
-  let upperCase = keyEvent.key.toUpperCase();
-
-  if (isKey(upperCase)) {
-	return upperCase;
-  }
-
-  throw new Error("Could not convert key.");
-}
-
-document.addEventListener("keyup", (event) => {
-  scriptManager.dispatchKeyUp(convertKeyEvent(event));
-});
-document.addEventListener("keydown", (event) => {
-  scriptManager.dispatchKeyDown(convertKeyEvent(event));
-});
-
+scriptManager.setupEventListeners();
 
 scriptManager.addScript((sm) => new KeyManager(scene, sm));
 scriptManager.addScript((sm) => new ForkliftScript(cube, sm));

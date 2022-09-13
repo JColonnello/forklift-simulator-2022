@@ -1,4 +1,4 @@
-import { Key, Script } from "./object";
+import { Key, keys, Script } from "./object";
 
 export class ScriptManager {
   scripts: Script[] = [];
@@ -14,8 +14,7 @@ export class ScriptManager {
 
   removeScriptOfType(scriptType: typeof Script) {
     let script = this.ofType(scriptType);
-    if (script == null)
-      return;
+    if (script == null) return;
     this.removeScript(script);
   }
 
@@ -26,6 +25,39 @@ export class ScriptManager {
       }
     }
     return null;
+  }
+
+  setupEventListeners() {
+    document.addEventListener("pointerup", ({ x, y }) =>
+      this.dispatchPointerUp(x, y)
+    );
+    document.addEventListener("pointerdown", ({ x, y }) =>
+      this.dispatchPointerDown(x, y)
+    );
+    document.addEventListener("pointermove", ({ x, y }) =>
+      this.dispatchPointerMove(x, y)
+    );
+
+    function isKey(str: string): str is Key {
+      return keys.includes(str as Key);
+    }
+
+    function convertKeyEvent(keyEvent: KeyboardEvent) {
+      let upperCase = keyEvent.key.toUpperCase();
+
+      if (isKey(upperCase)) {
+        return upperCase;
+      }
+
+      throw new Error("Could not convert key.");
+    }
+
+    document.addEventListener("keyup", (event) => {
+      this.dispatchKeyUp(convertKeyEvent(event));
+    });
+    document.addEventListener("keydown", (event) => {
+      this.dispatchKeyDown(convertKeyEvent(event));
+    });
   }
 
   #dispatch(event: keyof Script, args: any[] = []) {
