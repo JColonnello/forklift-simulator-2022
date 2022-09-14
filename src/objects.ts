@@ -4,11 +4,26 @@ import * as THREE from "three";
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();
 
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const geometry = new THREE.BoxGeometry(.6, .5, 1);
   const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
   cube.name = 'Forklift';
+
+  function addWheel(name: string, x: number, y: number) {
+    const geometry = new THREE.BoxGeometry(0.2, 0.5, 0.5);
+    const material = new THREE.MeshStandardMaterial({ color: 0x111111 });
+    const wheel = new THREE.Mesh(geometry, material);
+    wheel.position.set(x * .3, .25, y * -.5);
+    wheel.name = name;
+    wheel.rotation.order = "ZYX";
+    obj.add(wheel);
+  }
+
+  addWheel('front-right', 1, 1);
+  addWheel('front-left', -1, 1);
+  addWheel('back-right', 1, -1);
+  addWheel('back-left', -1, -1);
 
   obj.add(cube)
   scene.add(obj);

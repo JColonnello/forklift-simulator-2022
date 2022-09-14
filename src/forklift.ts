@@ -1,4 +1,4 @@
-import { Euler, Vector2, Vector3 } from "three";
+import { Euler, Object3D, Vector2, Vector3 } from "three";
 import { KeyManager } from "./keyManager";
 import { Key, Script } from "./script";
 
@@ -24,6 +24,24 @@ export class ForkliftScript extends Script {
   position = new Vector3(0, 0, 0);
   speed = 0;
   steeringPosition = 0;
+
+  
+  public get frontRightWheel() : Object3D {
+    return this.object.getObjectByName("front-right")!;
+  }
+  
+  public get frontLeftWheel() : Object3D {
+    return this.object.getObjectByName("front-left")!;
+  }
+  
+  public get backRightWheel() : Object3D {
+    return this.object.getObjectByName("back-right")!;
+  }
+  
+  public get backLeftWheel() : Object3D {
+    return this.object.getObjectByName("back-left")!;
+  }
+
 
   init(): void {
     this.keyManager = this.scriptManager.ofType<KeyManager>(KeyManager)!;
@@ -57,5 +75,14 @@ export class ForkliftScript extends Script {
     this.object.rotation.set(0, -this.angle, 0)
 
     this.object.position.clamp(new Vector3(-5, 0, -5), new Vector3(5, 0, 5))
+
+    const steeringMultiplier = 0.3;
+    this.frontRightWheel.rotation.y = -this.steeringPosition * steeringMultiplier;
+    this.frontLeftWheel.rotation.y = -this.steeringPosition * steeringMultiplier;
+
+    const wheels = [this.frontLeftWheel, this.frontRightWheel, this.backLeftWheel, this.backRightWheel];
+    for (const wheel of wheels) {
+      wheel.rotateX(this.speed * -0.01);
+    }
   }
 }
