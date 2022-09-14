@@ -1,4 +1,4 @@
-import {Object3D, Scene} from "three";
+import {Object3D, Scene, Sphere, Vector3} from "three";
 import * as THREE from "three";
 
 export function addForklift(scene: Object3D) {
@@ -73,6 +73,41 @@ export function addRoom(scene: Object3D, length: number, width: number, height: 
   // Left and Right
   addPlane(obj, -width / 2, 0, 0, length, height, 0, 1, wallMaterial);
   addPlane(obj, width / 2, 0, 0, length, height, 0, 3, wallMaterial);
+
+  scene.add(obj);
+
+  return obj;
+}
+
+
+export function addPrinter(scene: Object3D) {
+  let obj = new THREE.Object3D();
+
+  obj.position.set(3, 0, 3);
+
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+  const cube = new THREE.Mesh(geometry, material);
+  cube.position.set(0, .5, 0);
+  cube.name = 'Printer';
+  obj.add(cube);
+
+  scene.add(obj);
+
+  return obj;
+}
+
+export function addShelf(scene: Object3D) {
+  let obj = new THREE.Object3D();
+
+  obj.position.set(3, 0, -3);
+
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshStandardMaterial({ color: 0x00aa44 });
+  const cube = new THREE.Mesh(geometry, material);
+  cube.position.set(0, .5, 0);
+  cube.name = 'Shelf';
+  obj.add(cube);
 
   scene.add(obj);
 

@@ -1,10 +1,20 @@
 import * as THREE from "three";
-import {AmbientLight, Mesh, MeshBasicMaterial, Object3D, PointLight, Sphere, SphereGeometry} from "three";
+import {
+  AmbientLight,
+  Mesh,
+  MeshBasicMaterial,
+  Object3D,
+  PointLight,
+  Sphere,
+  SphereGeometry,
+} from "three";
 import { ForkliftScript } from "./forklift";
-import {KeyManager} from "./keyManager";
-import {Key, keys} from "./script";
+import { KeyManager } from "./keyManager";
+import { Key, keys } from "./script";
 import { ScriptManager } from "./scriptManager";
 import * as OBJECTS from "./objects";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitScript } from "./orbit";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -17,20 +27,50 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+const orbit = new OrbitControls(camera, renderer.domElement);
 
 const clock = new THREE.Clock();
-
 
 OBJECTS.addAmbientLight(scene);
 OBJECTS.addLight(scene, -3, 3, -3);
 OBJECTS.addLight(scene, 3, 3, 3);
 let room = new Object3D();
-room.position.set(0, -2, 0);
+room.position.set(0, -0.5, 0);
 OBJECTS.addRoom(room, 10, 10, 10);
-let cube = OBJECTS.addForklift(room);
+let forklift = OBJECTS.addForklift(room);
 scene.add(room);
 
-camera.position.z = 5;
+const printer = OBJECTS.addPrinter(room);
+const shelf = OBJECTS.addShelf(room);
+
+// Forklift POV
+const forkliftCamera = new Object3D();
+forkliftCamera.position.set(0, 0.5, 0);
+forklift.add(forkliftCamera);
+
+// Forklift back camera
+const backCamera = new Object3D();
+backCamera.position.set(0, 0.5, 2);
+forklift.add(backCamera);
+
+// Forklift side camera
+const sideCamera = new Object3D();
+sideCamera.position.set(2, 0.5, 0);
+sideCamera.rotateY(Math.PI / 2);
+forklift.add(sideCamera);
+
+// Printer camera
+const printerCamera = new Object3D();
+printer.add(printerCamera);
+
+// Shelf camera
+const shelfCamera = new Object3D();
+shelf.add(shelfCamera);
+
+camera.position.z = 2;
+camera.position.y = 1;
+
+//room.add(camera)
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -43,7 +83,17 @@ let scriptManager = new ScriptManager();
 scriptManager.setupEventListeners();
 
 scriptManager.addScript(KeyManager.bind(null, scene));
-scriptManager.addScript(ForkliftScript.bind(null, cube));
+scriptManager.addScript(ForkliftScript.bind(null, forklift));
+scriptManager.addScript(
+  OrbitScript.bind(null, orbit, room, [
+    { object: room, orbit: true },
+    { object: printerCamera, orbit: true },
+    { object: shelfCamera, orbit: true },
+    { object: forkliftCamera, orbit: false },
+    { object: backCamera, orbit: false },
+    { object: sideCamera, orbit: false },
+  ])
+);
 
 scriptManager.dispatchInit();
 

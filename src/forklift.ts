@@ -33,7 +33,7 @@ export class ForkliftScript extends Script {
 
     let turnSpeed = this.isKeyDown(right) ? 1 : this.isKeyDown(left) ? -1 : 0;
 
-    this.object.position.addScaledVector(new Vector3(this.direction.x, 0, this.direction.y), fwSpeed * maxSpeed * dt);
+    this.object.position.addScaledVector(new Vector3(this.direction.y, 0, -this.direction.x), fwSpeed * maxSpeed * dt);
     this.direction.rotateAround(new Vector2(), turnSpeed * maxTurnSpeed * dt);
     this.object.rotation.set(0, -this.direction.angle(), 0)
 
