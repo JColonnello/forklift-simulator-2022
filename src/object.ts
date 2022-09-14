@@ -40,6 +40,8 @@ export const keys = [
   "Shift",
   "Enter",
   "Backspace",
+  "OS",
+  "Escape",
 ] as const;
 export type Key = typeof keys[number];
 

@@ -1,21 +1,18 @@
 import {Key, Script} from "./object";
 
 export class KeyManager extends Script {
-  pressedKeys: Key[] = [];
+  pressedKeys: Set<Key> = new Set();
 
   keydown(key: Key) {
-    this.pressedKeys.push(key);
+    this.pressedKeys.add(key);
   }
 
   keyup(key: Key) {
-    let keyIndex = this.pressedKeys.indexOf(key);
-    if (keyIndex > -1) {
-      this.pressedKeys.splice(keyIndex);
-    }
+    this.pressedKeys.delete(key);
   }
 
   isKeyDown(key: Key) {
-    return this.pressedKeys.includes(key);
+    return this.pressedKeys.has(key);
   }
 }
 

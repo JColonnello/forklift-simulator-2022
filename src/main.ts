@@ -1,8 +1,10 @@
 import * as THREE from "three";
+import {AmbientLight, Mesh, MeshBasicMaterial, Object3D, PointLight, Sphere, SphereGeometry} from "three";
 import { ForkliftScript } from "./forklift";
 import {KeyManager} from "./keyManager";
 import {Key, keys} from "./object";
 import { ScriptManager } from "./scriptManager";
+import * as OBJECTS from "./objects";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -18,10 +20,15 @@ document.body.appendChild(renderer.domElement);
 
 const clock = new THREE.Clock();
 
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+
+OBJECTS.addAmbientLight(scene);
+OBJECTS.addLight(scene, -3, 3, -3);
+OBJECTS.addLight(scene, 3, 3, 3);
+let room = new Object3D();
+room.position.set(0, -2, 0);
+OBJECTS.addRoom(room, 10, 10, 10);
+let cube = OBJECTS.addForklift(room);
+scene.add(room);
 
 camera.position.z = 5;
 

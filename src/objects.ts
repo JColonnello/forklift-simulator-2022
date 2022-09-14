@@ -1,0 +1,80 @@
+import {Object3D, Scene} from "three";
+import * as THREE from "three";
+
+export function addForklift(scene: Object3D) {
+  let obj = new Object3D();
+
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+  const cube = new THREE.Mesh(geometry, material);
+  cube.position.set(0, .5, 0);
+  cube.name = 'Forklift';
+
+  obj.add(cube)
+  scene.add(obj);
+
+  return obj;
+}
+
+
+export function addAmbientLight(scene: Scene) {
+  const light = new THREE.AmbientLight(0xFFFFFF, 0.1);
+  scene.add(light);
+
+  return light;
+}
+
+
+
+export function addLight(scene: Scene, x: number, y: number, z: number) {
+  const light = new THREE.PointLight(0xFFFFFF, 1, 100);
+  light.position.set(x, y, z);
+  scene.add(light);
+
+  const lightGeometry = new THREE.SphereGeometry(0.2);
+  const lightMaterial = new THREE.MeshBasicMaterial({color: light.color});
+  const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
+  lightMesh.position.copy(light.position);
+  scene.add(lightMesh);
+
+  return light;
+}
+
+
+function addPlane(scene: Object3D, x: number, y: number, z: number, width: number, height: number, rx: number, ry: number, material: THREE.Material) {
+  const ground = new THREE.PlaneGeometry(width, height);
+  const mesh = new THREE.Mesh(ground, material);
+
+  mesh.rotateX(rx * Math.PI / 2);
+  mesh.rotateY(ry * Math.PI / 2);
+  mesh.position.set(x, y, z);
+
+
+  scene.add(mesh);
+
+  return mesh;
+}
+
+// Adds a room where (0, 0, 0) is the center of the floor.
+export function addRoom(scene: Object3D, length: number, width: number, height: number) {
+  let obj = new THREE.Object3D();
+  obj.position.set(0, height / 2, 0);
+
+  // Floor and ceiling
+  addPlane(obj, 0, -height / 2, 0, width, length, -1, 0, new THREE.MeshStandardMaterial({color: 0x661111}));
+  addPlane(obj, 0, height / 2, 0, width, length, 1, 0, new THREE.MeshStandardMaterial({color: 0x222222}));
+
+
+  let wallMaterial = new THREE.MeshStandardMaterial({color: 0x222222});
+  // Back and front
+  addPlane(obj, 0, 0, -length / 2, width, height, 0, 0, wallMaterial);
+  addPlane(obj, 0, 0, length / 2, width, height, 2, 0, wallMaterial);
+
+  // Left and Right
+  addPlane(obj, -width / 2, 0, 0, length, height, 0, 1, wallMaterial);
+  addPlane(obj, width / 2, 0, 0, length, height, 0, 3, wallMaterial);
+
+  scene.add(obj);
+
+  return obj;
+}
