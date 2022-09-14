@@ -1,6 +1,6 @@
 import { Vector2, Vector3 } from "three";
 import { KeyManager } from "./keyManager";
-import { Key, Script } from "./object";
+import { Key, Script } from "./script";
 
 const forward: Key = "W";
 const back: Key = "S";

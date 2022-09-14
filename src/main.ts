@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {AmbientLight, Mesh, MeshBasicMaterial, Object3D, PointLight, Sphere, SphereGeometry} from "three";
 import { ForkliftScript } from "./forklift";
 import {KeyManager} from "./keyManager";
-import {Key, keys} from "./object";
+import {Key, keys} from "./script";
 import { ScriptManager } from "./scriptManager";
 import * as OBJECTS from "./objects";
 

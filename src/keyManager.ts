@@ -1,4 +1,4 @@
-import {Key, Script} from "./object";
+import {Key, Script} from "./script";
 
 export class KeyManager extends Script {
   pressedKeys: Set<Key> = new Set();

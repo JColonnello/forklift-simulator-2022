@@ -56,8 +56,6 @@ export abstract class Script {
 
   update(dt: number): void {}
   init(): void {}
-  start(): void {}
-  stop(): void {}
 
   keydown(key: Key): void {}
   keyup(key: Key): void {}

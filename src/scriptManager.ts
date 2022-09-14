@@ -1,4 +1,4 @@
-import { Key, keys, Script } from "./object";
+import { Key, keys, Script } from "./script";
 
 export class ScriptManager {
   scripts: Script[] = [];
