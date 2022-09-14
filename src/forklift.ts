@@ -11,14 +11,18 @@ const up: Key = "Q";
 const down: Key = "E";
 const grab: Key = "G";
 
-const maxSpeed = 5;
+const minSpeed = 0.01;
+const maxSpeed = 3;
 const maxTurnSpeed = 4;
+const acceleration = 13;
+const drag = 10;
 
 export class ForkliftScript extends Script {
   keyManager?: KeyManager;
 
   direction = new Vector2(1, 0);
   position = new Vector3(0, 0, 0);
+  speed = 0;
 
   init(): void {
     this.keyManager = this.scriptManager.ofType<KeyManager>(KeyManager)!;
@@ -29,11 +33,20 @@ export class ForkliftScript extends Script {
   }
 
   update(dt: number): void {
-    let fwSpeed = this.isKeyDown(forward) ? 1 : this.isKeyDown(back) ? -1 : 0;
+    let fwTrust = this.isKeyDown(forward) ? 1 : this.isKeyDown(back) ? -1 : 0;
 
     let turnSpeed = this.isKeyDown(right) ? 1 : this.isKeyDown(left) ? -1 : 0;
 
-    this.object.position.addScaledVector(new Vector3(this.direction.y, 0, -this.direction.x), fwSpeed * maxSpeed * dt);
+    this.speed += fwTrust * acceleration * dt;
+    if (Math.abs(this.speed) > maxSpeed) {
+      this.speed = Math.sign(this.speed) * maxSpeed;
+    }
+    if (Math.abs(this.speed) > minSpeed) {
+      this.speed -= Math.sign(this.speed) * drag * dt;
+    } else {
+      this.speed = 0;
+    }
+    this.object.position.addScaledVector(new Vector3(this.direction.y, 0, -this.direction.x), this.speed * dt);
     this.direction.rotateAround(new Vector2(), turnSpeed * maxTurnSpeed * dt);
     this.object.rotation.set(0, -this.direction.angle(), 0)
 
