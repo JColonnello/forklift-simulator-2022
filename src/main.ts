@@ -15,6 +15,7 @@ import { ScriptManager } from "./scriptManager";
 import * as OBJECTS from "./objects";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { OrbitScript } from "./orbit";
+import {TrayScript} from "./tray";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -84,6 +85,7 @@ scriptManager.setupEventListeners();
 
 scriptManager.addScript(KeyManager.bind(null, scene));
 scriptManager.addScript(ForkliftScript.bind(null, forklift));
+scriptManager.addScript(TrayScript.bind(null, forklift.getObjectByName('tray')!));
 scriptManager.addScript(
   OrbitScript.bind(null, orbit, room, [
     { object: room, orbit: true },

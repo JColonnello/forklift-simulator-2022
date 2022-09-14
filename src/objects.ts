@@ -25,6 +25,19 @@ export function addForklift(scene: Object3D) {
   addWheel('back-right', 1, -1);
   addWheel('back-left', -1, -1);
 
+  function addTray() {
+    const trayOrigin = new Object3D();
+    trayOrigin.position.set(0, 0.7, -0.8);
+    const geometry = new THREE.BoxGeometry(0.5, 0.05, 0.5);
+    const material = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
+    const tray = new THREE.Mesh(geometry, material);
+    tray.name = "tray";
+    trayOrigin.add(tray);
+    obj.add(trayOrigin);
+  }
+
+  addTray();
+
   obj.add(cube)
   scene.add(obj);
 
