@@ -36,7 +36,7 @@ export class OrbitScript extends Script {
     //this.orbit.enableZoom = false;
     this.orbit.enablePan = false;
 
-    this.orbit.autoRotate = true;
+    //this.orbit.autoRotate = true;
     this.orbit.autoRotateSpeed = 2;
 
     this.orbit.maxDistance = 4;
