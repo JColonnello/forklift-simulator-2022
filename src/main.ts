@@ -1,25 +1,20 @@
 import * as THREE from "three";
 import {
-  AmbientLight,
-  Mesh,
-  MeshBasicMaterial,
   Object3D,
-  PointLight,
-  Sphere,
-  SphereGeometry,
 } from "three";
-import { ForkliftScript } from "./forklift";
-import { KeyManager } from "./keyManager";
-import { Key, keys } from "./script";
-import { ScriptManager } from "./scriptManager";
+import { ForkliftScript } from "./scripts/forklift";
+import { KeyManager } from "./scripts/keyManager";
+import { ScriptManager } from "./scripts/scriptManager";
 import * as OBJECTS from "./objects";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { OrbitScript } from "./orbit";
-import { TrayScript } from "./tray";
+import { OrbitScript } from "./scripts/orbit";
+import { TrayScript } from "./scripts/tray";
 import { setupGui } from "./gui";
+import { Printer } from "./scripts/printer";
 
 setupGui((generator) => {
-  console.log(generator);
+  const script = scriptManager.ofType<Printer>(Printer)!;
+  script?.print(generator.build());
 });
 
 
@@ -68,6 +63,7 @@ forklift.add(sideCamera);
 
 // Printer camera
 const printerCamera = new Object3D();
+printerCamera.position.set(0, 1, 0);
 printer.add(printerCamera);
 
 // Shelf camera
@@ -104,6 +100,7 @@ scriptManager.addScript(
     { object: sideCamera, orbit: false },
   ])
 );
+scriptManager.addScript(Printer.bind(null, printer));
 
 scriptManager.dispatchInit();
 

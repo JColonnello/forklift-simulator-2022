@@ -8,7 +8,7 @@ export function addForklift(scene: Object3D) {
   const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
-  cube.name = 'Forklift';
+  cube.name = 'forklift';
 
   function addWheel(name: string, x: number, y: number) {
     const geometry = new THREE.BoxGeometry(0.2, 0.5, 0.5);
@@ -117,7 +117,13 @@ export function addPrinter(scene: Object3D) {
   const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
-  cube.name = 'Printer';
+  cube.name = 'printer';
+
+  const platform = new Object3D()
+  platform.position.set(0, .5, 0);
+  platform.name = 'printer-platform';
+  cube.add(platform);
+
   obj.add(cube);
 
   scene.add(obj);
@@ -134,7 +140,7 @@ export function addShelf(scene: Object3D) {
   const material = new THREE.MeshStandardMaterial({ color: 0x00aa44 });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
-  cube.name = 'Shelf';
+  cube.name = 'shelf';
   obj.add(cube);
 
   scene.add(obj);

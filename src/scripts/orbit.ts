@@ -1,4 +1,4 @@
-import {Object3D, Event, Vector3} from "three";
+import {Object3D} from "three";
 import {Script} from "./script";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {ScriptManager} from "./scriptManager";
@@ -45,7 +45,7 @@ export class OrbitScript extends Script {
     this.orbit.enabled = false;
   }
 
-  update(dt: number): void {
+  update(_dt: number): void {
     this.orbit.enabled = this.currentTarget.orbit;
     if (this.currentTarget.orbit) {
       this.currentTarget.object.getWorldPosition(this.orbit.target);

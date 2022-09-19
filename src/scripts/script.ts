@@ -55,12 +55,12 @@ export abstract class Script {
     this.scriptManager = scriptManager;
   }
 
-  update(dt: number): void {}
+  update(_dt: number): void {}
   init(): void {}
 
-  keydown(key: Key): void {}
-  keyup(key: Key): void {}
-  pointerdown(x: number, y: number): void {}
-  pointerup(x: number, y: number): void {}
-  pointermove(x: number, y: number): void {}
+  keydown(_key: Key): void {}
+  keyup(_key: Key): void {}
+  pointerdown(_x: number, _y: number): void {}
+  pointerup(_x: number, _y: number): void {}
+  pointermove(_x: number, _y: number): void {}
 }

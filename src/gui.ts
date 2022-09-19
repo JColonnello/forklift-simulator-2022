@@ -1,40 +1,5 @@
-import { GUI, GUIController } from "dat.gui";
-
-function generate3Dprint() {
-  console.log("Printing!");
-}
-
-const solidTypes = ["Sweep", "Revolve"] as const;
-type SolidType = typeof solidTypes[number];
-
-const sweepShapes = ["B1", "B2", "B3", "B4"] as const;
-type SweepShape = typeof sweepShapes[number];
-
-const revolveShapes = ["A1", "A2", "A3", "A4"] as const;
-type RevolveShape = typeof revolveShapes[number];
-
-interface ModelGenerator {
-}
-
-class SweepModelLayerGenerator implements ModelGenerator {
-  shape: SweepShape;
-  torsionAngle: number;
-  height: number;
-
-  constructor(shape: SweepShape, torsionAngle: number, height: number) {
-    this.shape = shape;
-    this.torsionAngle = torsionAngle;
-    this.height = height;
-  }
-}
-
-class RevolveModelLayerGenerator implements ModelGenerator {
-  shape: RevolveShape;
-
-  constructor(shape: RevolveShape) {
-    this.shape = shape;
-  }
-}
+import { GUI } from "dat.gui";
+import { generateShape, ModelGenerator, RevolveModelGenerator, RevolveShape, revolveShapes, SolidType, solidTypes, SweepModelGenerator, SweepShape, sweepShapes } from "./generator";
 
 let printOptions: {
   type: SolidType;
@@ -81,10 +46,10 @@ export function setupGui(startPring: (generator: ModelGenerator) => void) {
     let modelLayerGenerator;
     switch (printOptions.type) {
       case "Sweep":
-        modelLayerGenerator = new SweepModelLayerGenerator(printOptions.sweepShape, printOptions.torsionAngle, printOptions.height);
+        modelLayerGenerator = new SweepModelGenerator(generateShape(printOptions.sweepShape), printOptions.torsionAngle, printOptions.height);
         break;
       case "Revolve":
-        modelLayerGenerator = new RevolveModelLayerGenerator(printOptions.revolveShape);
+        modelLayerGenerator = new RevolveModelGenerator(generateShape(printOptions.revolveShape));
         break;
     }
 

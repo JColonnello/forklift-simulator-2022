@@ -4,7 +4,9 @@ export class ScriptManager {
   scripts: Script[] = [];
 
   addScript(scriptBuilder: new (scriptManager: ScriptManager) => Script) {
-    this.scripts.push(new scriptBuilder(this));
+    const script = new scriptBuilder(this);
+    this.scripts.push(script);
+    return script;
   }
 
   removeScript(script: Script) {
