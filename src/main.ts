@@ -49,8 +49,9 @@ const shelf = OBJECTS.addShelf(room);
 
 // Forklift POV
 const forkliftCamera = new Object3D();
-forkliftCamera.position.set(0, 0.5, 0);
-forklift.add(forkliftCamera);
+forkliftCamera.position.set(0, .2, 1);
+//forklift.add(forkliftCamera);
+scene.getObjectByName('tray')!.add(forkliftCamera);
 
 // Forklift back camera
 const backCamera = new Object3D();

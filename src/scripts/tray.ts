@@ -6,12 +6,12 @@ import { Key, Script } from "./script";
 
 const up: Key = "Q";
 const down: Key = "E";
-const grab: Key = "G";
+const grab: Key[] = ["G", " "];
 
 const speed = 1;
 const distanceTreshold = 1;
 
-const showTreshold = true;
+const showTreshold = false;
 
 export class TrayScript extends Script {
   keyManager?: KeyManager;
@@ -39,7 +39,7 @@ export class TrayScript extends Script {
   update(dt: number): void {
     let trayControl = this.isKeyDown(up) ? 1 : this.isKeyDown(down) ? -1 : 0;
     this.height += trayControl * speed * dt;
-    this.height = this.height < 0 ? 0 : this.height > 1 ? 1 : this.height;
+    this.height = this.height < 0 ? 0 : this.height > 2 ? 2 : this.height;
     this.object.position.y = this.height;
   }
 
@@ -101,7 +101,7 @@ export class TrayScript extends Script {
   }
 
   keydown(key: Key): void {
-    if (key == grab) {
+    if (grab.includes(key)) {
       this.grabOrDrop();
     }
   }

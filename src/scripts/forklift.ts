@@ -72,7 +72,7 @@ export class ForkliftScript extends Script {
     this.object.position.addScaledVector(direction, this.speed * dt);
     this.object.rotation.set(0, -this.angle, 0)
 
-    this.object.position.clamp(new Vector3(-5, 0, -5), new Vector3(5, 0, 5))
+    this.object.position.clamp(new Vector3(-4, 0, -4), new Vector3(4, 0, 4))
 
     const steeringMultiplier = 0.3;
     this.frontRightWheel.rotation.y = -this.steeringPosition * steeringMultiplier;

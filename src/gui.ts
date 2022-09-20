@@ -8,7 +8,7 @@ let printOptions: {
   revolveShape: RevolveShape;
   height: number;
 } = {
-  type: "Sweep",
+  type: "Revolve",
   sweepShape: "B1",
   revolveShape: "A1",
   torsionAngle: 0,

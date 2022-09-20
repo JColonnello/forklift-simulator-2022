@@ -4,17 +4,32 @@ import { Object3D, Scene } from "three";
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();
 
-  const geometry = new THREE.BoxGeometry(.6, .5, 1);
+  const geometry = new THREE.BoxGeometry(.6, .35, 1.2);
   const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
   cube.name = 'forklift';
 
+  function addRoller(pos: number) {
+    const geometry = new THREE.BoxGeometry(.04, 2.1, .04);
+    const material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+    const roller = new THREE.Mesh(geometry, material);
+    roller.position.set(pos * .2, .8, -.6);
+    cube.add(roller);
+  }
+
+  addRoller(-1);
+  addRoller(1);
+
+  obj.add(cube)
+
   function addWheel(name: string, x: number, y: number) {
-    const geometry = new THREE.BoxGeometry(0.2, 0.5, 0.5);
+    //const geometry = new THREE.BoxGeometry(0.2, 0.5, 0.5);
+    const geometry = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 10);
+    geometry.rotateZ(Math.PI / 2);
     const material = new THREE.MeshStandardMaterial({ color: 0x111111 });
     const wheel = new THREE.Mesh(geometry, material);
-    wheel.position.set(x * .3, .25, y * -.5);
+    wheel.position.set(x * .4, .25, y * -.4);
     wheel.name = name;
     wheel.rotation.order = "ZYX";
     obj.add(wheel);
@@ -27,7 +42,7 @@ export function addForklift(scene: Object3D) {
 
   function addTray() {
     const trayOrigin = new Object3D();
-    trayOrigin.position.set(0, 0.7, -0.8);
+    trayOrigin.position.set(0, 0.3, -0.8);
     const geometry = new THREE.BoxGeometry(0.5, 0.05, 0.5);
     const material = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
     const tray = new THREE.Mesh(geometry, material);
@@ -38,7 +53,6 @@ export function addForklift(scene: Object3D) {
 
   addTray();
 
-  obj.add(cube)
   scene.add(obj);
 
   return obj;

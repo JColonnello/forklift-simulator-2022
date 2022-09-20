@@ -1,5 +1,5 @@
 import {Object3D} from "three";
-import {Script} from "./script";
+import {Key, Script} from "./script";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {ScriptManager} from "./scriptManager";
 
@@ -57,9 +57,11 @@ export class OrbitScript extends Script {
     }
   }
 
-  keydown(key: string): void {
-    if (key == " ") {
-      this.cycleTarget();
+  keydown(key: Key): void {
+    if (key.match(/[1-6]/)) {
+      const camNum = parseInt(key);
+      this.currentTarget = this.targets[camNum - 1];
+      //this.cycleTarget();
     }
   }
 
