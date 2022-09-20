@@ -80,7 +80,8 @@ export class TrayScript extends Script {
   }
 
   drop() {
-    const object = this.getClosestObjectInRange(this.getShelfCellObjects(), distanceTreshold);
+    const cells = this.getShelfCellObjects().filter(c => c.children.length == 0);
+    const object = this.getClosestObjectInRange(cells, distanceTreshold);
     if (object != null) {
       this.holding!.removeFromParent();
       object.add(this.holding!);
