@@ -12,6 +12,7 @@ import { TrayScript } from "./scripts/tray";
 import { setupGui } from "./gui";
 import { Printer } from "./scripts/printer";
 import {SceneScript} from "./scripts/scene";
+import {ShelfScript} from "./scripts/shelf";
 
 setupGui((generator) => {
   const script = scriptManager.ofType<Printer>(Printer)!;
@@ -103,6 +104,7 @@ scriptManager.addScript(
   ])
 );
 scriptManager.addScript(Printer.bind(null, printer));
+scriptManager.addScript(ShelfScript.bind(null, shelf));
 
 scriptManager.dispatchInit();
 

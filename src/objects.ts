@@ -134,11 +134,14 @@ export function addPrinter(scene: Object3D) {
 export function addShelf(scene: Object3D) {
   let obj = new THREE.Object3D();
 
-  obj.position.set(3, 0, -3);
+  obj.rotateY(-Math.PI / 2);
+  obj.position.set(1, 0, -3);
 
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshStandardMaterial({ color: 0x00aa44 });
-  const cube = new THREE.Mesh(geometry, material);
+  //const geometry = new THREE.BoxGeometry(1, 1, 1);
+  //const material = new THREE.MeshStandardMaterial({ color: 0x00aa44 });
+  //const cube = new THREE.Mesh(geometry, material);
+  const cube = new Object3D();
+
   cube.position.set(0, .5, 0);
   cube.name = 'shelf';
   obj.add(cube);

@@ -43,17 +43,21 @@ export class TrayScript extends Script {
     this.object.position.y = this.height;
   }
 
-  getPrinterObjects(): Object3D[] {
+  getShelfCellObjects(): Object3D[] {
+    return this.sceneScript!.getAllObjectByName("shelf-cell");
+  }
+
+  getPrintedObjects(): Object3D[] {
     return this.sceneScript!.getAllObjectByName("printed-object");
   }
 
-  getClosestObjectInRange(maximumDistance: number): Object3D | null {
+  getClosestObjectInRange(objects: Object3D[], maximumDistance: number): Object3D | null {
     const worldPos = this.object.getWorldPosition(new Vector3());
     let closest: { object?: Object3D; distance?: number } = {
       object: undefined,
       distance: undefined,
     };
-    for (const object of this.getPrinterObjects()) {
+    for (const object of objects) {
       const objectPosition = object.getWorldPosition(new Vector3());
       const distance = worldPos.distanceTo(objectPosition);
       if (
@@ -76,14 +80,17 @@ export class TrayScript extends Script {
   }
 
   drop() {
-    this.holding!.removeFromParent();
-    this.sceneScript!.object.add(this.holding!);
-    this.holding = null;
+    const object = this.getClosestObjectInRange(this.getShelfCellObjects(), distanceTreshold);
+    if (object != null) {
+      this.holding!.removeFromParent();
+      object.add(this.holding!);
+      this.holding = null;
+    }
   }
 
   grabOrDrop() {
     if (this.holding == null) {
-      const object = this.getClosestObjectInRange(distanceTreshold);
+      const object = this.getClosestObjectInRange(this.getPrintedObjects(), distanceTreshold);
       if (object != null) {
         this.grab(object);
       }
