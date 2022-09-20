@@ -9,6 +9,7 @@ yarn build
 # navigate into the build output directory
 cd dist
 
+rm -rf '.git'
 git init
 git checkout -b main
 git add -A
