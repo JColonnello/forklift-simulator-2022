@@ -54,10 +54,13 @@ export class ForkliftScript extends Script {
     this.steeringPosition += (steeringPosition - this.steeringPosition) * 0.1;
 
     this.speed += fwTrust * acceleration * dt;
-    if (Math.abs(this.speed) > minSpeed) {
+    if (this.speed != 0) {
+      const signBefore = Math.sign(this.speed);
       this.speed -= Math.sign(this.speed) * drag * dt;
-    } else {
-      this.speed = 0;
+      const signAfter = Math.sign(this.speed);
+      if (signBefore != signAfter) {
+        this.speed = 0;
+      }
     }
     if (Math.abs(this.speed) > maxSpeed) {
       this.speed = Math.sign(this.speed) * maxSpeed;
