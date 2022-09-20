@@ -7,7 +7,6 @@ const back: Key = "S";
 const left: Key = "A";
 const right: Key = "D";
 
-const minSpeed = 0.01;
 const maxSpeed = 3;
 const maxTurnSpeed = 0.5;
 const acceleration = 13;
