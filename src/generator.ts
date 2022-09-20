@@ -1,4 +1,4 @@
-import { BoxGeometry, BufferGeometry, CubicBezierCurve, ExtrudeGeometry, LatheGeometry, Shape, Vector2 } from "three";
+import { BufferGeometry, ExtrudeGeometry, LatheGeometry, Shape, Vector2 } from "three";
 
 
 export const solidTypes = ["Sweep", "Revolve"] as const;

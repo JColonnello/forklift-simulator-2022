@@ -3,7 +3,7 @@ import { Key, Script } from "./script";
 
 const up: Key = "Q";
 const down: Key = "E";
-const grab: Key = "G";
+//const grab: Key = "G";
 
 const speed = 1;
 

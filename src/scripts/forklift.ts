@@ -1,4 +1,4 @@
-import { Euler, Object3D, Vector2, Vector3 } from "three";
+import { Euler, Object3D, Vector3 } from "three";
 import { KeyManager } from "./keyManager";
 import { Key, Script } from "./script";
 

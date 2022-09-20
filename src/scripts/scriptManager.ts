@@ -67,7 +67,29 @@ export class ScriptManager {
 
   #dispatch(event: keyof Script, args: any[] = []) {
     for (let script of this.scripts) {
-      script[event](...args);
+      switch (event) {
+        case 'update':
+          script.update(args[0]);
+          break;
+        case 'init':
+          script.init();
+          break;
+        case 'keydown':
+          script.keydown(args[0])
+          break;
+        case 'keyup':
+          script.keyup(args[0])
+          break;
+        case 'pointerdown':
+          script.pointerdown(args[0], args[1]);
+          break;
+        case 'pointerup':
+          script.pointerup(args[0], args[1]);
+          break;
+        case 'pointermove':
+          script.pointermove(args[0], args[1]);
+          break;
+      }
     }
   }
 

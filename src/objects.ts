@@ -1,5 +1,5 @@
-import {Object3D, Scene, Sphere, Vector3} from "three";
 import * as THREE from "three";
+import { Object3D, Scene } from "three";
 
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();
