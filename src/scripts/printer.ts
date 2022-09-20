@@ -25,6 +25,7 @@ export class Printer extends Script {
     const material = new MeshStandardMaterial({color: 0xFF6600});
     this.printingObject = new Mesh(geometry, material);
     this.printingObject.name = 'printing-object';
+    this.printingObject.name = 'printed-object';
     this.platform!.add(this.printingObject);
   }
 }

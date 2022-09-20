@@ -11,6 +11,7 @@ import { OrbitScript } from "./scripts/orbit";
 import { TrayScript } from "./scripts/tray";
 import { setupGui } from "./gui";
 import { Printer } from "./scripts/printer";
+import {SceneScript} from "./scripts/scene";
 
 setupGui((generator) => {
   const script = scriptManager.ofType<Printer>(Printer)!;
@@ -85,6 +86,7 @@ window.addEventListener("resize", onWindowResize);
 let scriptManager = new ScriptManager();
 scriptManager.setupEventListeners();
 
+scriptManager.addScript(SceneScript.bind(null, room));
 scriptManager.addScript(KeyManager.bind(null, scene));
 scriptManager.addScript(ForkliftScript.bind(null, forklift));
 scriptManager.addScript(
