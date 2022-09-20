@@ -134,8 +134,8 @@ export function addPrinter(scene: Object3D) {
 export function addShelf(scene: Object3D) {
   let obj = new THREE.Object3D();
 
-  obj.rotateY(-Math.PI / 2);
-  obj.position.set(1, 0, -3);
+  //obj.rotateY(-Math.PI / 2);
+  obj.position.set(0, 0, -4.5);
 
   //const geometry = new THREE.BoxGeometry(1, 1, 1);
   //const material = new THREE.MeshStandardMaterial({ color: 0x00aa44 });
