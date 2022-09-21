@@ -68,16 +68,21 @@ export function addAmbientLight(scene: Scene) {
 
 
 
-export function addLight(scene: Scene, x: number, y: number, z: number) {
+export function addLight(scene: Object3D, x: number, y: number, z: number) {
+  const lightHolder = new Object3D();
+
   const light = new THREE.PointLight(0xFFFFFF, 1, 100);
-  light.position.set(x, y, z);
-  scene.add(light);
 
   const lightGeometry = new THREE.SphereGeometry(0.2);
   const lightMaterial = new THREE.MeshBasicMaterial({color: light.color});
   const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
-  lightMesh.position.copy(light.position);
-  scene.add(lightMesh);
+  lightMesh.position.setY(lightGeometry.parameters.radius);
+  lightMesh.add(light);
+
+  lightHolder.position.set(x, y, z)
+  lightHolder.add(lightMesh);
+
+  scene.add(lightHolder);
 
   return light;
 }
