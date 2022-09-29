@@ -1,7 +1,7 @@
 import { Object3D, Vector3 } from "three";
 import * as THREE from "three";
 import { KeyManager } from "./keyManager";
-import { SceneScript } from "./scene";
+import { RoomScript } from "./scene";
 import { Key, Script } from "./script";
 
 const up: Key = "Q";
@@ -15,14 +15,14 @@ const showTreshold = false;
 
 export class TrayScript extends Script {
   keyManager?: KeyManager;
-  sceneScript?: SceneScript;
+  sceneScript?: RoomScript;
   holding: Object3D | null = null;
 
   height = 0;
 
   init(): void {
     this.keyManager = this.scriptManager.ofType<KeyManager>(KeyManager)!;
-    this.sceneScript = this.scriptManager.ofType<SceneScript>(SceneScript)!;
+    this.sceneScript = this.scriptManager.ofType<RoomScript>(RoomScript)!;
 
     if (showTreshold) {
       const geo = new THREE.SphereGeometry(distanceTreshold);

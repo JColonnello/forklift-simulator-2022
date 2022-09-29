@@ -3,12 +3,12 @@ import { Object3D, Scene } from "three";
 
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();
+  obj.name = 'forklift';
 
   const geometry = new THREE.BoxGeometry(.6, .35, 1.2);
   const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
-  cube.name = 'forklift';
 
   function addRoller(pos: number) {
     const geometry = new THREE.BoxGeometry(.04, 2.1, .04);
@@ -131,12 +131,12 @@ export function addPrinter(scene: Object3D) {
   let obj = new THREE.Object3D();
 
   obj.position.set(3, 0, 3);
+  obj.name = 'printer';
 
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
-  cube.name = 'printer';
 
   const platform = new Object3D()
   platform.position.set(0, .5, 0);
@@ -155,6 +155,7 @@ export function addShelf(scene: Object3D) {
 
   //obj.rotateY(-Math.PI / 2);
   obj.position.set(0, 0, -4.5);
+  obj.name = 'shelf';
 
   //const geometry = new THREE.BoxGeometry(1, 1, 1);
   //const material = new THREE.MeshStandardMaterial({ color: 0x00aa44 });
@@ -162,10 +163,51 @@ export function addShelf(scene: Object3D) {
   const cube = new Object3D();
 
   cube.position.set(0, .5, 0);
-  cube.name = 'shelf';
   obj.add(cube);
 
   scene.add(obj);
 
   return obj;
+}
+
+export function addCameras(scene: Object3D) {
+  const forklift = scene.getObjectByName('forklift')!;
+  const printer = scene.getObjectByName('printer')!;
+  const shelf = scene.getObjectByName('shelf')!;
+
+  // Room Camera
+  const roomCamera = new Object3D();
+  roomCamera.name = "room-camera";
+  scene.add(roomCamera);
+
+  // Forklift POV
+  const forkliftCamera = new Object3D();
+  forkliftCamera.name = "forklift-camera";
+  forkliftCamera.position.set(0, 0.2, 1);
+  //forklift.add(forkliftCamera);
+  forklift.getObjectByName("tray")!.add(forkliftCamera);
+
+  // Forklift back camera
+  const backCamera = new Object3D();
+  backCamera.name = "back-camera";
+  backCamera.position.set(0, 1.5, 2);
+  forklift.add(backCamera);
+
+  // Forklift side camera
+  const sideCamera = new Object3D();
+  sideCamera.name = "side-camera";
+  sideCamera.position.set(2, 0.5, 0);
+  sideCamera.rotateY(Math.PI / 2);
+  forklift.add(sideCamera);
+
+  // Printer camera
+  const printerCamera = new Object3D();
+  printerCamera.name = "printer-camera";
+  printerCamera.position.set(0, 1, 0);
+  printer.add(printerCamera);
+
+  // Shelf camera
+  const shelfCamera = new Object3D();
+  shelfCamera.name = "shelf-camera";
+  shelf.add(shelfCamera);
 }

@@ -21,7 +21,7 @@ export class OrbitScript extends Script {
   targetIterator: Generator<CameraTarget>;
   currentTarget: CameraTarget;
 
-  constructor(orbit: OrbitControls, scene: Object3D, targets: CameraTarget[], sm: ScriptManager) {
+  constructor(orbit: OrbitControls, targets: CameraTarget[], scene: Object3D, sm: ScriptManager) {
     super(scene, sm)
     this.orbit = orbit;
     this.targets = targets;

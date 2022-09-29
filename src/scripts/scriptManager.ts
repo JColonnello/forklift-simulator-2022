@@ -1,12 +1,65 @@
+import {Object3D} from "three";
 import { Key, keys, Script } from "./script";
+
+type ScriptConstructor = new (o: Object3D, sm: ScriptManager) => Script;
+
+export type ChildrenScriptMap = {
+  [objName: string | "this"]: ScriptMap
+};
+
+type ScriptConstructors = ScriptConstructor[] | ScriptConstructor;
+
+type ScriptMapWithChildren = {
+  scripts?: ScriptConstructors,
+  children: ChildrenScriptMap,
+};
+
+export type ScriptMap = ScriptConstructors | ScriptMapWithChildren | ChildrenScriptMap;
+
+function isScriptMapWithChildren(sm: ScriptMap): sm is ScriptMapWithChildren {
+  return !(sm instanceof Function) && !(sm instanceof Array) && sm.scripts !== undefined;
+}
+
+type NormalizedScriptMap = {
+  scripts: ScriptConstructor[],
+  children: ChildrenScriptMap,
+};
+
+function normalize(sm: ScriptMap): NormalizedScriptMap {
+  if (sm instanceof Function) {
+    return {scripts: [sm], children: {}};
+  }
+  if (sm instanceof Array) {
+    return {scripts: sm, children: {}};
+  }
+  if (isScriptMapWithChildren(sm)) {
+    let scripts = sm.scripts ?? [];
+    return {scripts: scripts instanceof Array ? scripts : [scripts], children: sm.children};
+  }
+  return {scripts: [], children: sm};
+}
 
 export class ScriptManager {
   scripts: Script[] = [];
 
-  addScript(scriptBuilder: new (scriptManager: ScriptManager) => Script) {
-    const script = new scriptBuilder(this);
+  addScript(scriptBuilder: ScriptConstructor, object: Object3D) {
+    const script = new scriptBuilder(object, this);
     this.scripts.push(script);
+    
+    this.addAll(script.childrenScripts, object);
     return script;
+  }
+
+  addAll(scriptMap: ScriptMap, root: Object3D) {
+    const {scripts, children} = normalize(scriptMap);
+
+    for (const script of scripts) {
+      this.addScript(script, root);
+    }
+    for (const child in children) {
+      const element = children[child];
+      this.addAll(element, root.getObjectByName(child)!);
+    }
   }
 
   removeScript(script: Script) {

@@ -1,6 +1,7 @@
 import { Euler, Object3D, Vector3 } from "three";
 import { KeyManager } from "./keyManager";
 import { Key, Script } from "./script";
+import {TrayScript} from "./tray";
 
 const forward: Key = "W";
 const back: Key = "S";
@@ -37,6 +38,11 @@ export class ForkliftScript extends Script {
     return this.object.getObjectByName("back-left")!;
   }
 
+  get childrenScripts() {
+    return {
+      tray: TrayScript,
+    }
+  }
 
   init(): void {
     this.keyManager = this.scriptManager.ofType<KeyManager>(KeyManager)!;

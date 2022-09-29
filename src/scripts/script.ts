@@ -1,5 +1,5 @@
 import { Object3D } from "three";
-import {ScriptManager} from "./scriptManager";
+import {ChildrenScriptMap, ScriptManager, ScriptMap} from "./scriptManager";
 
 export const keys = [
   "Q",
@@ -54,6 +54,10 @@ export abstract class Script {
   constructor(object: Object3D, scriptManager: ScriptManager) {
     this.object = object;
     this.scriptManager = scriptManager;
+  }
+
+  get childrenScripts(): ScriptMap {
+    return {};
   }
 
   update(_dt: number): void {}
