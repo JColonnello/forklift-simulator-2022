@@ -53,6 +53,32 @@ export function addForklift(scene: Object3D) {
 
   addTray();
 
+  function addEye(name: string, x: number) {
+    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.025, 10);
+    const material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+    const eye = new THREE.Mesh(geometry, material);
+    eye.name = name;
+    eye.position.set(x * 0.35, 0.5, -0.6);
+    eye.rotateX(Math.PI / 2);
+
+    function addPupil() {
+      const geometry = new THREE.CylinderGeometry(0.03, 0.03, 0.01, 10);
+      const material = new THREE.MeshStandardMaterial({ color: 0 });
+      const pupil = new THREE.Mesh(geometry, material);
+      pupil.name = "pupil";
+      pupil.position.setY(-0.027);
+      
+      eye.add(pupil);
+    }
+
+    addPupil();
+
+    obj.add(eye);
+  }
+
+  addEye('left-eye', -1);
+  addEye('right-eye', 1);
+
   scene.add(obj);
 
   return obj;
@@ -186,6 +212,14 @@ export function addCameras(scene: Object3D) {
   forkliftCamera.position.set(0, 0.2, 1);
   //forklift.add(forkliftCamera);
   forklift.getObjectByName("tray")!.add(forkliftCamera);
+
+  // Forklift front camera
+  const frontCamera = new Object3D();
+  frontCamera.name = "front-camera";
+  frontCamera.position.set(0, 1.5, -2);
+  frontCamera.rotateY(Math.PI);
+  frontCamera.rotateX(-Math.PI / 6);
+  forklift.add(frontCamera);
 
   // Forklift back camera
   const backCamera = new Object3D();

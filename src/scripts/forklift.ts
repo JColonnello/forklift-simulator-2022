@@ -1,4 +1,5 @@
 import { Euler, Object3D, Vector3 } from "three";
+import {EyeScript} from "./eye";
 import { KeyManager } from "./keyManager";
 import { Key, Script } from "./script";
 import {TrayScript} from "./tray";
@@ -41,6 +42,8 @@ export class ForkliftScript extends Script {
   get childrenScripts() {
     return {
       tray: TrayScript,
+      'left-eye': EyeScript,
+      'right-eye': EyeScript,
     }
   }
 
