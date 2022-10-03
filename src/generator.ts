@@ -1,5 +1,4 @@
-import { BufferGeometry, ExtrudeGeometry, LatheGeometry, Shape, Vector2 } from "three";
-
+import { BufferGeometry, ExtrudeGeometry, ExtrudeGeometryOptions, LatheGeometry, Quaternion, Shape, Vector2, Vector3 } from "three";
 
 export const solidTypes = ["Sweep", "Revolve"] as const;
 export type SolidType = typeof solidTypes[number];
@@ -143,9 +142,31 @@ export class SweepModelGenerator implements ModelGenerator {
 
   build(): BufferGeometry {
     const shanpe = this.shape.generate();
-    const geometry = new ExtrudeGeometry(shanpe, { depth: this.height });
+    const extrudeSettings : ExtrudeGeometryOptions = { 
+      depth: this.height,
+      bevelEnabled: false,
+      steps: 10,
+    };
+    const geometry = new ExtrudeGeometry(shanpe, extrudeSettings);
 
-    ///TODO: Twisting
+    const vertices = geometry.attributes.position;
+    const quaternion = new Quaternion();
+    for (let i = 0; i < vertices.count; i++) {
+      let pos = new Vector3();
+      pos.fromBufferAttribute(vertices, i);
+      const upVec = new Vector3(0, 0, 1);
+
+      quaternion.setFromAxisAngle(
+        upVec, 
+        (Math.PI/180 * this.torsionAngle) * (pos.z / this.height)
+      );
+
+      pos = pos.applyQuaternion(quaternion);
+      vertices.setXY(i, pos.x, pos.y);
+    }
+    vertices.needsUpdate = true;
+    //Rotate to extrude upwards
+    geometry.rotateX(-Math.PI/2);
     return geometry;
   }
 }
