@@ -94,7 +94,12 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         canExtrude = true;
         canRevolve = true;
         generate = () => {
-          throw new Error();
+          let shape = new Shape();
+          shape.moveTo(Math.cos(Math.PI/3), Math.sin(Math.PI/3));
+          shape.lineTo(Math.cos(Math.PI), Math.sin(Math.PI));
+          shape.lineTo(Math.cos(-Math.PI/3), Math.sin(-Math.PI/3));
+          shape.lineTo(Math.cos(Math.PI/3), Math.sin(Math.PI/3));
+          return shape;
         }
       };
 
@@ -103,7 +108,19 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         canExtrude = true;
         canRevolve = true;
         generate = () => {
-          throw new Error();
+          let shape = new Shape();
+          let ang = 0;
+          shape.moveTo(Math.cos(ang), Math.sin(ang));
+          for(let i = 1; i < 7*2;)
+          {
+            ang = Math.PI / 7 * i++;
+            const p1 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(0.6);
+            ang = Math.PI / 7 * i++;
+            const p2 = new Vector2(Math.cos(ang), Math.sin(ang));
+            console.log(ang);
+            shape.splineThru([p1, p2]);
+          }
+          return shape;
         }
       };
 
