@@ -6,7 +6,7 @@ export function addForklift(scene: Object3D) {
   obj.name = 'forklift';
 
   const geometry = new THREE.BoxGeometry(.6, .35, 1.2);
-  const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+  const material = new THREE.MeshStandardMaterial({ color: 0x22a592 });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
 
@@ -45,7 +45,7 @@ export function addForklift(scene: Object3D) {
     trayOrigin.position.set(0, 0.3, -0.8);
     const geometry = new THREE.BoxGeometry(0.5, 0.05, 0.5);
     geometry.translate(0, -0.05/2, 0);
-    const material = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
+    const material = new THREE.MeshStandardMaterial({ color: 0xfea617 });
     const tray = new THREE.Mesh(geometry, material);
     tray.name = "tray";
     trayOrigin.add(tray);
