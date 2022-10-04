@@ -1,4 +1,5 @@
 import { DoubleSide, Mesh, MeshStandardMaterial, Object3D } from "three";
+import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
 import { ModelGenerator } from "../generator";
 import { Script } from "./script";
 
@@ -114,10 +115,12 @@ export class Printer extends Script {
     if (printedObject !== undefined) {
       printedObject.removeFromParent();
     }
-    const geometry = modelGenerator.build();
+    let geometry = modelGenerator.build();
     const height = modelGenerator.height * Printer.printScale;
     this.lastPieceHeight = height;
     // Fix lighting issue
+
+    geometry = BufferGeometryUtils.mergeVertices(geometry, 1e-6);
     geometry.computeVertexNormals();
 
     this.removePrintingObject();
