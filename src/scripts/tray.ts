@@ -9,7 +9,7 @@ const down: Key = "E";
 const grab: Key[] = ["G", " "];
 
 const speed = 1;
-const distanceTreshold = 1;
+const distanceTreshold = 0.5;
 
 const showTreshold = false;
 
