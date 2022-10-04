@@ -20,6 +20,10 @@ export interface BaseShape {
   generate(): Shape;
 }
 
+function mirrorVertices(vertices: Vector2[], axis: Vector2): Vector2[] {
+  return [...vertices, ...vertices.slice(0, -1).map(v => new Vector3(v.x, v.y).reflect(new Vector3(axis.x, axis.y).normalize())).map(v => new Vector2(v.x, v.y)).reverse()]
+}
+
 export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
   switch (shapeType) {
     case 'A1':
@@ -117,7 +121,6 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
             const p1 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(0.6);
             ang = Math.PI / 7 * i++;
             const p2 = new Vector2(Math.cos(ang), Math.sin(ang));
-            console.log(ang);
             shape.splineThru([p1, p2]);
           }
           return shape;
@@ -129,7 +132,30 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         canExtrude = true;
         canRevolve = true;
         generate = () => {
-          throw new Error();
+          let shape = new Shape();
+          shape.moveTo(0.3, 0.5);
+          let vectors = [
+            new Vector2(-0.3, 0.5),
+            new Vector2(-0.3, 1),
+            new Vector2(-0.7, 1),
+            new Vector2(-0.9, 0.9),
+            // new Vector2(-1, 0.7),
+            // new Vector2(-1, 0.3),
+            // new Vector2(-0.5, 0.3),
+          ];
+          vectors = mirrorVertices(vectors, new Vector2(1, 1));
+          const center = new Vector2(0, 0);
+          for(let i = 0; i < 4; i++)
+          {
+            const v = vectors.map(v => v.clone().rotateAround(center, Math.PI / 2 * i));
+            shape.lineTo(v[0].x, v[0].y);
+            shape.lineTo(v[1].x, v[1].y);
+            shape.lineTo(v[2].x, v[2].y);
+            shape.splineThru([v[3], v[4]]);
+            shape.lineTo(v[5].x, v[5].y);
+            shape.lineTo(v[6].x, v[6].y);
+          }
+          return shape;
         }
       };
 
@@ -138,7 +164,18 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         canExtrude = true;
         canRevolve = true;
         generate = () => {
-          throw new Error();
+          let shape = new Shape();
+          shape.moveTo(0.5, -0.65);
+          shape.lineTo(0.5, 0.65);
+          let v = new Vector2(0.5, 0.65);
+          let center = new Vector2(0, 0.65);
+          
+          shape.splineThru(new Array(5).fill(0).map((_, i, a) => v.clone().rotateAround(center, Math.PI/a.length*(i+1))));
+          shape.lineTo(-0.5, -0.65);
+          v = new Vector2(-0.5, -0.65);
+          center = new Vector2(0, -0.65);
+          shape.splineThru(new Array(5).fill(0).map((_, i, a) => v.clone().rotateAround(center, Math.PI/a.length*(i+1))));
+          return shape;
         }
       };
   }
@@ -184,6 +221,8 @@ export class SweepModelGenerator implements ModelGenerator {
     vertices.needsUpdate = true;
     //Rotate to extrude upwards
     geometry.rotateX(-Math.PI/2);
+    geometry.scale(0.5, 1, 0.5);
+
     return geometry;
   }
 }
