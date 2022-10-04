@@ -9,7 +9,7 @@ import {Root} from "./scripts/root";
 
 setupGui((generator) => {
   const script = scriptManager.ofType<Printer>(Printer)!;
-  script?.print(generator.build());
+  script?.print(generator);
 });
 
 const scene = new THREE.Scene();
@@ -36,7 +36,7 @@ OBJECTS.addForklift(room);
 
 OBJECTS.addAmbientLight(scene);
 OBJECTS.addLight(room, -3, 2, -3);
-OBJECTS.addLight(room, 3, 2, 3);
+OBJECTS.addLight(room, 3, 3, 3);
 
 OBJECTS.addPrinter(room);
 OBJECTS.addShelf(room);

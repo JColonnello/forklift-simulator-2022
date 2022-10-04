@@ -44,6 +44,7 @@ export function addForklift(scene: Object3D) {
     const trayOrigin = new Object3D();
     trayOrigin.position.set(0, 0.3, -0.8);
     const geometry = new THREE.BoxGeometry(0.5, 0.05, 0.5);
+    geometry.translate(0, -0.05/2, 0);
     const material = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
     const tray = new THREE.Mesh(geometry, material);
     tray.name = "tray";
@@ -133,10 +134,14 @@ export function addPrinter(scene: Object3D) {
   obj.position.set(3, 0, 3);
   obj.name = 'printer';
 
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
-  const cube = new THREE.Mesh(geometry, material);
-  cube.position.set(0, .5, 0);
+  function addCube() {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(0, .5, 0);
+    return cube;
+  }
+  const cube = addCube();
 
   const platform = new Object3D()
   platform.position.set(0, .5, 0);
@@ -146,6 +151,38 @@ export function addPrinter(scene: Object3D) {
   obj.add(cube);
 
   scene.add(obj);
+
+  function addHead() {
+    const geometry = new THREE.BoxGeometry(1, 0.1, 1);
+    geometry.translate(0, 0.1/2, 0);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const head = new THREE.Mesh(geometry, material);
+    head.name = 'printer-head';
+    head.position.set(0, 1, 0);
+
+    function addHeadOffset() {
+      const headOffset = new Object3D();
+      headOffset.name = 'printer-head-offset';
+
+      head.add(headOffset)
+    }
+    addHeadOffset()
+
+    platform.add(head);
+  }
+
+  function addGuide(p: number) {
+    const geometry = new THREE.CylinderGeometry(0.05, 0.05, 1);
+    const material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+    const guide = new THREE.Mesh(geometry, material);
+    guide.name = 'printer-guide';
+    guide.position.set(0.4, 0.5, p);
+    platform.add(guide);
+  }
+
+  addHead();
+  addGuide(0.1);
+  addGuide(-0.1);
 
   return obj;
 }

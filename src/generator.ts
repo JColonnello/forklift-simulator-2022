@@ -11,6 +11,7 @@ export type RevolveShape = typeof revolveShapes[number];
 
 export interface ModelGenerator {
   build(): BufferGeometry;
+  get height(): number;
 }
 
 
@@ -28,7 +29,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
   switch (shapeType) {
     case 'A1':
       return new class implements BaseShape {
-        canExtrude = true;
+        canExtrude = false;
         canRevolve = true;
         generate = () => {
           let shape = new Shape();
@@ -45,7 +46,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
 
     case 'A2':
       return new class implements BaseShape {
-        canExtrude = true;
+        canExtrude = false;
         canRevolve = true;
         generate = () => {
           let shape = new Shape();
@@ -61,7 +62,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
 
     case 'A3':
       return new class implements BaseShape {
-        canExtrude = true;
+        canExtrude = false;
         canRevolve = true;
         generate = () => {
           let shape = new Shape();
@@ -78,7 +79,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
 
     case 'A4':
       return new class implements BaseShape {
-        canExtrude = true;
+        canExtrude = false;
         canRevolve = true;
         generate = () => {
           let shape = new Shape();
@@ -96,7 +97,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
     case 'B1':
       return new class implements BaseShape {
         canExtrude = true;
-        canRevolve = true;
+        canRevolve = false;
         generate = () => {
           let shape = new Shape();
           shape.moveTo(Math.cos(Math.PI/3), Math.sin(Math.PI/3));
@@ -110,7 +111,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
     case 'B2':
       return new class implements BaseShape {
         canExtrude = true;
-        canRevolve = true;
+        canRevolve = false;
         generate = () => {
           let shape = new Shape();
           let ang = 0;
@@ -130,7 +131,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
     case 'B3':
       return new class implements BaseShape {
         canExtrude = true;
-        canRevolve = true;
+        canRevolve = false;
         generate = () => {
           let shape = new Shape();
           shape.moveTo(0.3, 0.5);
@@ -162,7 +163,7 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
     case 'B4':
       return new class implements BaseShape {
         canExtrude = true;
-        canRevolve = true;
+        canRevolve = false;
         generate = () => {
           let shape = new Shape();
           shape.moveTo(0.5, -0.65);
@@ -184,22 +185,22 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
 export class SweepModelGenerator implements ModelGenerator {
   shape: BaseShape;
   torsionAngle: number;
-  height: number;
+  #height: number;
 
   constructor(shape: BaseShape, torsionAngle: number, height: number) {
     if(!shape.canExtrude)
       throw new TypeError('Cannot extrude this shape');
     this.shape = shape;
     this.torsionAngle = torsionAngle;
-    this.height = height;
+    this.#height = height;
   }
 
   build(): BufferGeometry {
     const shanpe = this.shape.generate();
     const extrudeSettings : ExtrudeGeometryOptions = { 
-      depth: this.height,
+      depth: this.#height,
       bevelEnabled: false,
-      steps: 10,
+      steps: 30,
     };
     const geometry = new ExtrudeGeometry(shanpe, extrudeSettings);
 
@@ -212,7 +213,7 @@ export class SweepModelGenerator implements ModelGenerator {
 
       quaternion.setFromAxisAngle(
         upVec, 
-        (Math.PI/180 * this.torsionAngle) * (pos.z / this.height)
+        (Math.PI/180 * this.torsionAngle) * (pos.z / this.#height)
       );
 
       pos = pos.applyQuaternion(quaternion);
@@ -224,6 +225,10 @@ export class SweepModelGenerator implements ModelGenerator {
     geometry.scale(0.5, 1, 0.5);
 
     return geometry;
+  }
+
+  get height(): number {
+    return this.#height;
   }
 }
 
@@ -242,5 +247,9 @@ export class RevolveModelGenerator implements ModelGenerator {
     const geometry = new LatheGeometry(points.shape);
     
     return geometry;
+  }
+
+  get height(): number {
+    return 1;
   }
 }
