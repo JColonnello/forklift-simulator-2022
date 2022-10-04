@@ -1,4 +1,4 @@
-import { BufferGeometry, DoubleSide, Mesh, MeshStandardMaterial, Object3D } from "three";
+import { DoubleSide, Mesh, MeshStandardMaterial, Object3D } from "three";
 import { ModelGenerator } from "../generator";
 import { Script } from "./script";
 
