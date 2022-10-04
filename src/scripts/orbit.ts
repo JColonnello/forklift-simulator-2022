@@ -2,6 +2,7 @@ import {Object3D} from "three";
 import {Key, Script} from "./script";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {ScriptManager} from "./scriptManager";
+import {KeyManager} from "./keyManager";
 
 
 function* cycle<T>(arr: T[]) {
@@ -15,11 +16,20 @@ export type CameraTarget = {
   orbit: boolean,
 };
 
+function zoom(orbit: OrbitControls, delta: number) {
+    let prevZoomSpeed = orbit.zoomSpeed;
+    orbit.zoomSpeed = delta;
+    const event = new WheelEvent('wheel', {deltaY: 0.1});
+    document.querySelector('canvas')!.dispatchEvent(event);
+    orbit.zoomSpeed = prevZoomSpeed;
+}
+
 export class OrbitScript extends Script {
   orbit: OrbitControls;
   targets: CameraTarget[];
   targetIterator: Generator<CameraTarget>;
   currentTarget: CameraTarget;
+  keyManager?: KeyManager;
 
   constructor(orbit: OrbitControls, targets: CameraTarget[], scene: Object3D, sm: ScriptManager) {
     super(scene, sm)
@@ -43,6 +53,8 @@ export class OrbitScript extends Script {
     this.orbit.minDistance = 0.5;
 
     this.orbit.enabled = false;
+
+    this.keyManager = this.scriptManager.ofType<KeyManager>(KeyManager)!;
   }
 
   update(_dt: number): void {
@@ -54,6 +66,12 @@ export class OrbitScript extends Script {
       let camera = this.orbit.object;
       this.currentTarget.object.getWorldPosition(camera.position);
       this.currentTarget.object.getWorldQuaternion(camera.quaternion);
+    }
+    if (this.keyManager!.isKeyDown('P')) {
+      zoom(this.orbit, -0.5);
+    }
+    if (this.keyManager!.isKeyDown('O')) {
+      zoom(this.orbit, 0.5);
     }
   }
 
