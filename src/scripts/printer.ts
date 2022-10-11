@@ -1,5 +1,6 @@
-import { DoubleSide, Mesh, MeshNormalMaterial, MeshStandardMaterial, Object3D, Plane, Vector3 } from "three";
-import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
+import { DoubleSide, Mesh, MeshStandardMaterial, Object3D, Plane, Vector3 } from "three";
+//import { MeshNormalMaterial } from "three";
+//import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
 import { ModelGenerator } from "../generator";
 import { Script } from "./script";
 
