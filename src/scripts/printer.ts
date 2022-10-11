@@ -30,7 +30,7 @@ function getObjectSingleMaterial(object: Mesh) {
 
 export class Printer extends Script {
   #platform?: Object3D;
-  #head?: Object3D;
+  #head?: Mesh;
   #headOffset?: Object3D;
   static printScale = 0.3;
   static speed = 0.5;
@@ -41,7 +41,7 @@ export class Printer extends Script {
     return this.#platform!;
   }
 
-  get head(): Object3D {
+  get head(): Mesh {
     return this.#head!;
   }
 
@@ -59,7 +59,7 @@ export class Printer extends Script {
 
   init(): void {
     this.#platform = this.object.getObjectByName('printer-platform');
-    this.#head = this.object.getObjectByName('printer-head');
+    this.#head = this.object.getObjectByName('printer-head') as Mesh;
     this.#headOffset = this.object.getObjectByName('printer-head-offset');
   }
 

@@ -11,11 +11,11 @@ export type CameraTarget = {
 };
 
 function zoom(orbit: OrbitControls, delta: number) {
-    let prevZoomSpeed = orbit.zoomSpeed;
-    orbit.zoomSpeed = delta;
-    const event = new WheelEvent('wheel', {deltaY: 0.1});
-    document.querySelector('canvas')!.dispatchEvent(event);
-    orbit.zoomSpeed = prevZoomSpeed;
+  let prevZoomSpeed = orbit.zoomSpeed;
+  orbit.zoomSpeed = delta;
+  const event = new WheelEvent('wheel', {deltaY: 0.1});
+  document.querySelector('canvas')!.dispatchEvent(event);
+  orbit.zoomSpeed = prevZoomSpeed;
 }
 
 export class OrbitScript extends Script {
@@ -24,7 +24,13 @@ export class OrbitScript extends Script {
   currentTarget: CameraTarget;
   keyManager?: KeyManager;
 
-  constructor(orbit: OrbitControls, targets: CameraTarget[], scene: Object3D, sm: ScriptManager) {
+  constructor(scene: Object3D, sm: ScriptManager);
+  constructor(orbit: OrbitControls, targets: CameraTarget[], scene: Object3D, sm: ScriptManager);
+
+  constructor(orbit: OrbitControls | Object3D, targets: CameraTarget[] | ScriptManager, scene?: Object3D, sm?: ScriptManager) {
+    if (orbit instanceof Object3D || targets instanceof ScriptManager || scene === undefined || sm === undefined) {
+      throw "Constructor should be called with all parameters.";
+    }
     super(scene, sm)
     this.orbit = orbit;
     this.targets = targets;
@@ -49,6 +55,10 @@ export class OrbitScript extends Script {
     this.keyManager = this.scriptManager.ofType<KeyManager>(KeyManager)!;
   }
 
+  zoom(delta: number) {
+    zoom(this.orbit, delta);
+  }
+
   update(_dt: number): void {
     this.orbit.enabled = this.currentTarget.orbit;
     if (this.currentTarget.orbit) {
@@ -60,17 +70,21 @@ export class OrbitScript extends Script {
       this.currentTarget.object.getWorldQuaternion(camera.quaternion);
     }
     if (this.keyManager!.isKeyDown('P')) {
-      zoom(this.orbit, -0.5);
+      this.zoom(-0.5);
     }
     if (this.keyManager!.isKeyDown('O')) {
-      zoom(this.orbit, 0.5);
+      this.zoom(0.5);
     }
+  }
+
+  setCurrentCamera(index: number) {
+    this.currentTarget = this.targets[index];
   }
 
   keydown(key: Key): void {
     if (key.match(/[1-6]/)) {
       const camNum = parseInt(key);
-      this.currentTarget = this.targets[camNum - 1];
+      this.setCurrentCamera(camNum - 1);
     }
   }
 }

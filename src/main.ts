@@ -1,11 +1,14 @@
 import * as THREE from "three";
-import { Object3D } from "three";
+import { MeshBasicMaterial, Object3D } from "three";
 import { ScriptManager } from "./scripts/scriptManager";
 import * as OBJECTS from "./objects";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { setupGui } from "./gui";
 import { Printer } from "./scripts/printer";
 import {Root} from "./scripts/root";
+import config from "./config";
+import {generateShape, SweepModelGenerator} from "./generator";
+import {OrbitScript} from "./scripts/orbit";
 
 setupGui((generator) => {
   const script = scriptManager.ofType<Printer>(Printer)!;
@@ -62,6 +65,22 @@ scriptManager.addScript(
 );
 
 scriptManager.dispatchInit();
+
+if (config.printerTesting) {
+  const printer = scriptManager.ofType<Printer>(Printer)!;
+  printer.print(new SweepModelGenerator(generateShape("B1"), 180, 1));
+
+  const orbit = scriptManager.ofType<OrbitScript>(OrbitScript)!;
+  orbit.setCurrentCamera(1);
+
+  setTimeout(() => {
+    orbit.zoom(-45);
+  });
+
+  const material = printer.head.material as MeshBasicMaterial;
+  material.opacity = 0.1;
+  material.transparent = true;
+}
 
 function animate() {
   let dt = clock.getDelta();
