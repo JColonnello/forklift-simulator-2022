@@ -5,12 +5,6 @@ import {ScriptManager} from "./scriptManager";
 import {KeyManager} from "./keyManager";
 
 
-function* cycle<T>(arr: T[]) {
-  while (true) {
-    yield *arr;
-  }
-}
-
 export type CameraTarget = {
   object: Object3D,
   orbit: boolean,
@@ -27,7 +21,6 @@ function zoom(orbit: OrbitControls, delta: number) {
 export class OrbitScript extends Script {
   orbit: OrbitControls;
   targets: CameraTarget[];
-  targetIterator: Generator<CameraTarget>;
   currentTarget: CameraTarget;
   keyManager?: KeyManager;
 
@@ -35,8 +28,7 @@ export class OrbitScript extends Script {
     super(scene, sm)
     this.orbit = orbit;
     this.targets = targets;
-    this.targetIterator = cycle(this.targets);
-    this.currentTarget = this.targetIterator.next().value;
+    this.currentTarget = this.targets[0];
   }
 
   init(): void {
@@ -50,7 +42,7 @@ export class OrbitScript extends Script {
     this.orbit.autoRotateSpeed = 2;
 
     this.orbit.maxDistance = 8;
-    this.orbit.minDistance = 0.5;
+    this.orbit.minDistance = 0.1;
 
     this.orbit.enabled = false;
 
@@ -79,11 +71,6 @@ export class OrbitScript extends Script {
     if (key.match(/[1-6]/)) {
       const camNum = parseInt(key);
       this.currentTarget = this.targets[camNum - 1];
-      //this.cycleTarget();
     }
-  }
-
-  cycleTarget() {
-    this.currentTarget = this.targetIterator.next().value;
   }
 }
