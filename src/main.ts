@@ -23,6 +23,7 @@ camera.position.z = 2;
 camera.position.y = 1;
 
 const renderer = new THREE.WebGLRenderer();
+renderer.localClippingEnabled = true;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const orbit = new OrbitControls(camera, renderer.domElement);
