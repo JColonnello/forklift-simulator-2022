@@ -1,13 +1,17 @@
-import {BufferAttribute, BufferGeometry, Vector3} from "three";
+import {BufferGeometry, Vector3} from "three";
 
-export function mergeVertices(geometry: BufferGeometry): BufferGeometry {
+export function mergeVertices(geometry: BufferGeometry, presicionDigits = 3): BufferGeometry {
   const position = geometry.getAttribute('position');
   const normal = geometry.getAttribute('normal');
+  const indices = geometry.getIndex();
 
   const map = new Map();
-  
+
   function getVecHash(v: Vector3) {
-    return `${v.x},${v.y},${v.z}`;
+    const x = v.x.toFixed(presicionDigits);
+    const y = v.y.toFixed(presicionDigits);
+    const z = v.z.toFixed(presicionDigits);
+    return `${x},${y},${z}`;
   }
 
   if (position.count != normal.count) {
@@ -15,26 +19,47 @@ export function mergeVertices(geometry: BufferGeometry): BufferGeometry {
   }
 
   const count = position.count;
-  const newIndices = [];
+  const indexMap = new Map();
 
+  const p = new Vector3();
   for (let i = 0; i < count; i++) {
-    const p = new Vector3(
+    p.set(
       position.array[i * position.itemSize + 0],
       position.array[i * position.itemSize + 1],
       position.array[i * position.itemSize + 2],
     );
 
     const posHash = getVecHash(p);
-    if (!map.has(posHash)) {
+    
+    const newIndex = map.get(posHash);
+    if (newIndex === undefined) {
       map.set(posHash, i);
     }
-    newIndices.push(map.get(posHash));
+
+    indexMap.set(i, newIndex ?? i);
   }
 
-  geometry.setIndex(newIndices)
+  const newIndices = [];
 
-  console.log(map);
-  
+  if (indices !== null) {
+    for (let i = 0; i < indices.count; i++) {
+      let index = indices.array[i];
+      
+      newIndices.push(indexMap.get(index));
+    }
+  } else {
+    for (let i = 0; i < count; i++) {
+      p.set(
+        position.array[i * position.itemSize + 0],
+        position.array[i * position.itemSize + 1],
+        position.array[i * position.itemSize + 2],
+      );
+
+      const posHash = getVecHash(p);
+      newIndices.push(map.get(posHash));
+    }
+  }
+  geometry.setIndex(newIndices);
   
   return geometry;
 }
