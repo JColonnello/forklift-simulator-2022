@@ -206,8 +206,13 @@ export class SweepModelGenerator implements ModelGenerator {
     const shanpe = this.shape.generate();
     const extrudeSettings : ExtrudeGeometryOptions = { 
       depth: this.#height,
-      bevelEnabled: false,
+      bevelEnabled: true,
+      bevelSize: 0.03,
+      bevelOffset: 0,
+      bevelThickness: 0.01,
+      bevelSegments: 2,
       steps: 30,
+      curveSegments: 20,
     };
     const geometry = new ExtrudeGeometry(shanpe, extrudeSettings);
 
