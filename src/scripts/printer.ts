@@ -2,7 +2,6 @@ import { DoubleSide, Mesh, MeshStandardMaterial, Object3D, Plane, Vector3 } from
 //import { MeshNormalMaterial } from "three";
 //import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
 import { ModelGenerator } from "../generator";
-import {mergeVertices} from "../vertexUtils";
 import { Script } from "./script";
 
 enum PrintingStage {
@@ -134,11 +133,6 @@ export class Printer extends Script {
     let geometry = modelGenerator.build();
     const height = modelGenerator.height * Printer.printScale;
     this.lastPieceHeight = height;
-    // Fix lighting issue
-
-    //geometry = BufferGeometryUtils.mergeVertices(geometry, 1e-4);
-    geometry = mergeVertices(geometry);
-    geometry.computeVertexNormals();
 
     this.removePrintingObject();
     const material = new MeshStandardMaterial({

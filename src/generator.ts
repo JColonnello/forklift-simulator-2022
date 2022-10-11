@@ -1,4 +1,5 @@
 import { BufferGeometry, ExtrudeGeometry, ExtrudeGeometryOptions, LatheGeometry, Quaternion, Shape, Vector2, Vector3 } from "three";
+import {mergeVertices} from "./vertexUtils";
 
 export const solidTypes = ["Sweep", "Revolve"] as const;
 export type SolidType = typeof solidTypes[number];
@@ -9,9 +10,17 @@ export type SweepShape = typeof sweepShapes[number];
 export const revolveShapes = ["A1", "A2", "A3", "A4"] as const;
 export type RevolveShape = typeof revolveShapes[number];
 
-export interface ModelGenerator {
-  build(): BufferGeometry;
-  get height(): number;
+export abstract class ModelGenerator {
+  build(): BufferGeometry {
+    var geometry = this.generate();
+    // Fix lighting issue
+    geometry = mergeVertices(geometry);
+    geometry.computeVertexNormals();
+
+    return geometry;
+  }
+  abstract get height(): number;
+  protected abstract generate(): BufferGeometry;
 }
 
 
@@ -189,12 +198,13 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
   }
 }
 
-export class SweepModelGenerator implements ModelGenerator {
+export class SweepModelGenerator extends ModelGenerator {
   shape: BaseShape;
   torsionAngle: number;
   #height: number;
 
   constructor(shape: BaseShape, torsionAngle: number, height: number) {
+    super();
     if(!shape.canExtrude)
       throw new TypeError('Cannot extrude this shape');
     this.shape = shape;
@@ -202,7 +212,7 @@ export class SweepModelGenerator implements ModelGenerator {
     this.#height = height;
   }
 
-  build(): BufferGeometry {
+  generate(): BufferGeometry {
     const shanpe = this.shape.generate();
     const extrudeSettings : ExtrudeGeometryOptions = { 
       depth: this.#height,
@@ -244,16 +254,17 @@ export class SweepModelGenerator implements ModelGenerator {
   }
 }
 
-export class RevolveModelGenerator implements ModelGenerator {
+export class RevolveModelGenerator extends ModelGenerator {
   shape: BaseShape;
 
   constructor(shape: BaseShape) {
+    super();
     if(!shape.canRevolve)
       throw new TypeError('Cannot revolve this shape');
     this.shape = shape;
   }
 
-  build(): BufferGeometry {
+  generate(): BufferGeometry {
     const shanpe = this.shape.generate();
     const points = shanpe.extractPoints(50);
     const geometry = new LatheGeometry(points.shape);
