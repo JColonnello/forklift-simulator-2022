@@ -1,4 +1,4 @@
-import { DoubleSide, Mesh, MeshStandardMaterial, Object3D, Plane, Vector3 } from "three";
+import { DoubleSide, Mesh, MeshNormalMaterial, MeshStandardMaterial, Object3D, Plane, Vector3 } from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
 import { ModelGenerator } from "../generator";
 import { Script } from "./script";
@@ -134,7 +134,7 @@ export class Printer extends Script {
     this.lastPieceHeight = height;
     // Fix lighting issue
 
-    geometry = BufferGeometryUtils.mergeVertices(geometry, 1e-6);
+    //geometry = BufferGeometryUtils.mergeVertices(geometry, 1e-4);
     geometry.computeVertexNormals();
 
     this.removePrintingObject();
@@ -142,7 +142,12 @@ export class Printer extends Script {
       color: 0xFF6600, 
       side: DoubleSide, 
       clippingPlanes: [new Plane()], 
+      //wireframe: true,
     });
+    //const material = new MeshNormalMaterial({
+      //side: DoubleSide,
+      //clippingPlanes: [new Plane()],
+    //});
     const obj = new Mesh(geometry, material);
     
     this.headOffset.position.y = -height;
