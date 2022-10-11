@@ -2,6 +2,7 @@ import { DoubleSide, Mesh, MeshStandardMaterial, Object3D, Plane, Vector3 } from
 //import { MeshNormalMaterial } from "three";
 //import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
 import { ModelGenerator } from "../generator";
+import {mergeVertices} from "../vertexUtils";
 import { Script } from "./script";
 
 enum PrintingStage {
@@ -136,6 +137,7 @@ export class Printer extends Script {
     // Fix lighting issue
 
     //geometry = BufferGeometryUtils.mergeVertices(geometry, 1e-4);
+    geometry = mergeVertices(geometry);
     geometry.computeVertexNormals();
 
     this.removePrintingObject();
@@ -144,6 +146,7 @@ export class Printer extends Script {
       side: DoubleSide, 
       clippingPlanes: [new Plane()], 
       //wireframe: true,
+      //flatShading: true,
     });
     //const material = new MeshNormalMaterial({
       //side: DoubleSide,
