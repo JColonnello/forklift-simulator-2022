@@ -179,8 +179,8 @@ export function addPrinter(scene: Object3D) {
   scene.add(obj);
 
   function addHead() {
-    const geometry = new THREE.BoxGeometry(1, 0.1, 1);
-    geometry.translate(0, 0.1/2, 0);
+    const geometry = new THREE.BoxGeometry(1, 0.05, 1);
+    geometry.translate(0, geometry.parameters.height/2, 0);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const head = new THREE.Mesh(geometry, material);
     head.name = 'printer-head';
