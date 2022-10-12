@@ -87,7 +87,7 @@ export function addForklift(scene: Object3D) {
 
 
 export function addAmbientLight(scene: Scene) {
-  const light = new THREE.AmbientLight(0xFFFFFF, 0.1);
+  const light = new THREE.AmbientLight(0xFFFFFF, 0.3);
   scene.add(light);
 
   return light;

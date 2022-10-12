@@ -39,7 +39,7 @@ OBJECTS.addRoom(room, 10, 10, 10);
 OBJECTS.addForklift(room);
 
 OBJECTS.addAmbientLight(scene);
-OBJECTS.addLight(room, -3, 2, -3);
+OBJECTS.addLight(room, -3, 3, -3);
 OBJECTS.addLight(room, 3, 3, 3);
 
 OBJECTS.addPrinter(room);
