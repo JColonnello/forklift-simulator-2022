@@ -314,7 +314,7 @@ function addForklift(scene2) {
   return obj;
 }
 function addAmbientLight(scene2) {
-  const light = new THREE.AmbientLight(16777215, 0.1);
+  const light = new THREE.AmbientLight(16777215, 0.3);
   scene2.add(light);
   return light;
 }
@@ -1324,7 +1324,7 @@ room.position.set(0, -0.5, 0);
 addRoom(room, 10, 10, 10);
 addForklift(room);
 addAmbientLight(scene);
-addLight(room, -3, 2, -3);
+addLight(room, -3, 3, -3);
 addLight(room, 3, 3, 3);
 addPrinter(room);
 addShelf(room);
