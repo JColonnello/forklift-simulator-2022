@@ -1,6 +1,8 @@
 
 # Manual de Usuario
 
+![Habitacion](assets/room.png)
+
 ## Controles:
 
 W: Avanzar
