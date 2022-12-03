@@ -1,4 +1,4 @@
-import { GUI, GUIController } from "dat.gui";
+import { GUI } from "dat.gui";
 import {
   generateShape,
   ModelGenerator,
@@ -48,7 +48,7 @@ export function setupGui(startPring: (generator: ModelGenerator, texture: string
 
   function setTexturePattern(pattern: Patterns) {
     const options = Object.keys(textures[pattern]);
-    let element = textureVariant.domElement.children[0];
+    let element: HTMLSelectElement = textureVariant.domElement.children[0] as HTMLSelectElement;
     element.innerHTML = "";
 
     element.value = options[0];
@@ -103,7 +103,7 @@ export function setupGui(startPring: (generator: ModelGenerator, texture: string
               break;
           }
 
-          startPring(modelLayerGenerator, textures[printOptions.texturePattern][printOptions.textureVariant]);
+          startPring(modelLayerGenerator, textures[printOptions.texturePattern][printOptions.textureVariant] as string);
         },
       },
       "button"

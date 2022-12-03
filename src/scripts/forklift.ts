@@ -1,4 +1,4 @@
-import { Euler, Object3D, Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { EyeScript } from "./eye";
 import { KeyManager } from "./keyManager";
 import { Key, Script } from "./script";
@@ -14,6 +14,8 @@ const maxTurnSpeed = 0.5;
 const acceleration = 13;
 const drag = 10;
 
+type WheelMesh = THREE.Mesh<THREE.CylinderGeometry, THREE.MeshPhongMaterial>;
+
 export class ForkliftScript extends Script {
   keyManager?: KeyManager;
 
@@ -22,20 +24,24 @@ export class ForkliftScript extends Script {
   speed = 0;
   steeringPosition = 0;
 
-  public get frontRightWheel(): Object3D {
-    return this.object.getObjectByName("front-right")!;
+  getWheel(name: string): WheelMesh {
+    return this.object.getObjectByName(name)! as WheelMesh;
   }
 
-  public get frontLeftWheel(): Object3D {
-    return this.object.getObjectByName("front-left")!;
+  public get frontRightWheel(): WheelMesh {
+    return this.getWheel("front-right");
   }
 
-  public get backRightWheel(): Object3D {
-    return this.object.getObjectByName("back-right")!;
+  public get frontLeftWheel(): WheelMesh {
+    return this.getWheel("front-left");
   }
 
-  public get backLeftWheel(): Object3D {
-    return this.object.getObjectByName("back-left")!;
+  public get backRightWheel(): WheelMesh {
+    return this.getWheel("back-right");
+  }
+
+  public get backLeftWheel(): WheelMesh {
+    return this.getWheel("back-left");
   }
 
   get childrenScripts() {
