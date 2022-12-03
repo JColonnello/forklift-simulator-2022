@@ -2,7 +2,6 @@ import {
   DoubleSide,
   Mesh,
   MeshPhongMaterial,
-  MeshStandardMaterial,
   Object3D,
   Plane,
   RepeatWrapping,

@@ -9,8 +9,8 @@ const cellCols = 8;
 const legHeight = 0.5;
 const topExtraHeight = 0.025;
 const thickness = 0.05;
-const material = new THREE.MeshStandardMaterial({ color: 0x0066ff });
-const pilarMaterial = new THREE.MeshStandardMaterial({ color: 0xaaff00 });
+const material = new THREE.MeshPhongMaterial({ color: 0x0066ff });
+const pilarMaterial = new THREE.MeshPhongMaterial({ color: 0xaaff00 });
 
 export class ShelfScript extends Script {
   addCells() {

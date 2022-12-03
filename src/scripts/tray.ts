@@ -26,7 +26,7 @@ export class TrayScript extends Script {
 
     if (showTreshold) {
       const geo = new THREE.SphereGeometry(distanceTreshold);
-      const mat = new THREE.MeshStandardMaterial({
+      const mat = new THREE.MeshPhongMaterial({
         opacity: 0.2,
         transparent: true,
       });

@@ -1,7 +1,6 @@
 import * as THREE from "three";
-import { Object3D, RepeatWrapping, Scene, Vector2, Wrapping } from "three";
-import {loadTexture} from "./textures";
-
+import { Object3D, RepeatWrapping, Scene, Vector2 } from "three";
+import { loadTexture } from "./textures";
 
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();
@@ -17,7 +16,10 @@ export function addForklift(scene: Object3D) {
 
   function addRoller(pos: number) {
     const geometry = new THREE.BoxGeometry(0.04, 2.1, 0.04);
-    const material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xaaaaaa,
+      shininess: 100,
+    });
     const roller = new THREE.Mesh(geometry, material);
     roller.position.set(pos * 0.2, 0.8, -0.6);
     cube.add(roller);
@@ -32,7 +34,14 @@ export function addForklift(scene: Object3D) {
   function addWheel(name: string, x: number, y: number) {
     //const geometry = new THREE.BoxGeometry(0.2, 0.5, 0.5);
     const wheelRadius = 0.25;
-    const geometry = new THREE.CylinderGeometry(wheelRadius, wheelRadius, 0.2, 10, 1, true);
+    const geometry = new THREE.CylinderGeometry(
+      wheelRadius,
+      wheelRadius,
+      0.2,
+      10,
+      1,
+      true
+    );
     geometry.rotateZ(Math.PI / 2);
 
     const material = new THREE.MeshPhongMaterial({
@@ -71,7 +80,7 @@ export function addForklift(scene: Object3D) {
     trayOrigin.position.set(0, 0.3, -0.8);
     const geometry = new THREE.BoxGeometry(0.5, 0.05, 0.5);
     geometry.translate(0, -0.05 / 2, 0);
-    const material = new THREE.MeshStandardMaterial({ color: 0xfea617 });
+    const material = new THREE.MeshPhongMaterial({ color: 0xfea617 });
     const tray = new THREE.Mesh(geometry, material);
     tray.name = "tray";
     trayOrigin.add(tray);
@@ -82,7 +91,7 @@ export function addForklift(scene: Object3D) {
 
   function addEye(name: string, x: number) {
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.025, 10);
-    const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const material = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 100 });
     const eye = new THREE.Mesh(geometry, material);
     eye.name = name;
     eye.position.set(x * 0.35, 0.5, -0.6);
@@ -90,7 +99,7 @@ export function addForklift(scene: Object3D) {
 
     function addPupil() {
       const geometry = new THREE.CylinderGeometry(0.03, 0.03, 0.01, 10);
-      const material = new THREE.MeshStandardMaterial({ color: 0 });
+      const material = new THREE.MeshPhongMaterial({ color: 0, shininess: 100 });
       const pupil = new THREE.Mesh(geometry, material);
       pupil.name = "pupil";
       pupil.position.setY(-0.027);
@@ -170,6 +179,10 @@ export function addRoom(
   let obj = new THREE.Object3D();
   obj.position.set(0, height / 2, 0);
 
+  const floorTexture = loadTexture("StoneTilesFloor01_1K_BaseColor.png");
+  floorTexture.repeat = new Vector2(5, 5);
+  floorTexture.wrapS = RepeatWrapping;
+  floorTexture.wrapT = RepeatWrapping;
   // Floor and ceiling
   addPlane(
     obj,
@@ -180,7 +193,7 @@ export function addRoom(
     length,
     -1,
     0,
-    new THREE.MeshStandardMaterial({ color: 0x661111 })
+    new THREE.MeshPhongMaterial({ map: floorTexture })
   );
   addPlane(
     obj,
@@ -191,10 +204,17 @@ export function addRoom(
     length,
     1,
     0,
-    new THREE.MeshStandardMaterial({ color: 0x222222 })
+    new THREE.MeshPhongMaterial({ color: 0x222222 })
   );
 
-  let wallMaterial = new THREE.MeshStandardMaterial({ color: 0x222222 });
+  const wallTexture = loadTexture("CorrugatedMetalPanel02_1K_BaseColor.png");
+  wallTexture.repeat = new Vector2(3, 3);
+  wallTexture.wrapS = RepeatWrapping;
+  wallTexture.wrapT = RepeatWrapping;
+  let wallMaterial = new THREE.MeshPhongMaterial({
+    color: 0x444444,
+    map: wallTexture,
+  });
   // Back and front
   addPlane(obj, 0, 0, -length / 2, width, height, 0, 0, wallMaterial);
   addPlane(obj, 0, 0, length / 2, width, height, 2, 0, wallMaterial);
@@ -215,8 +235,8 @@ export function addPrinter(scene: Object3D) {
   obj.name = "printer";
 
   function addCube() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 20);
+    const material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
     const cube = new THREE.Mesh(geometry, material);
     cube.position.set(0, 0.5, 0);
     return cube;
@@ -233,9 +253,9 @@ export function addPrinter(scene: Object3D) {
   scene.add(obj);
 
   function addHead() {
-    const geometry = new THREE.BoxGeometry(1, 0.05, 1);
+    const geometry = new THREE.BoxGeometry(0.9, 0.025, 0.9);
     geometry.translate(0, geometry.parameters.height / 2, 0);
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
     const head = new THREE.Mesh(geometry, material);
     head.name = "printer-head";
     head.position.set(0, 1, 0);
@@ -252,8 +272,11 @@ export function addPrinter(scene: Object3D) {
   }
 
   function addGuide(p: number) {
-    const geometry = new THREE.CylinderGeometry(0.05, 0.05, 1);
-    const material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+    const geometry = new THREE.CylinderGeometry(0.025, 0.025, 1);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xaaaaaa,
+      shininess: 100,
+    });
     const guide = new THREE.Mesh(geometry, material);
     guide.name = "printer-guide";
     guide.position.set(0.4, 0.5, p);
@@ -270,13 +293,9 @@ export function addPrinter(scene: Object3D) {
 export function addShelf(scene: Object3D) {
   let obj = new THREE.Object3D();
 
-  //obj.rotateY(-Math.PI / 2);
   obj.position.set(0, 0, -4.5);
   obj.name = "shelf";
 
-  //const geometry = new THREE.BoxGeometry(1, 1, 1);
-  //const material = new THREE.MeshStandardMaterial({ color: 0x00aa44 });
-  //const cube = new THREE.Mesh(geometry, material);
   const cube = new Object3D();
 
   cube.position.set(0, 0.5, 0);
