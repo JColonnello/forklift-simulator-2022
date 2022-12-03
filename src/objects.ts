@@ -1,10 +1,16 @@
 import * as THREE from "three";
 import { Object3D, Scene } from "three";
 
+const textureLoader = new THREE.TextureLoader();
+
+function loadTexture(name: string) {
+return textureLoader.load(`assets/textures/${name}`);
+  
+}
+
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();
   obj.name = 'forklift';
-
   const geometry = new THREE.BoxGeometry(.6, .35, 1.2);
   const material = new THREE.MeshStandardMaterial({ color: 0x22a592 });
   const cube = new THREE.Mesh(geometry, material);
@@ -22,7 +28,7 @@ export function addForklift(scene: Object3D) {
   addRoller(1);
 
   obj.add(cube)
-  const wheelTexture = new THREE.TextureLoader().load("assets/textures/rueda.jpg");
+  const wheelTexture = loadTexture("rueda.jpg");
 
   function addWheel(name: string, x: number, y: number) {
     //const geometry = new THREE.BoxGeometry(0.2, 0.5, 0.5);
