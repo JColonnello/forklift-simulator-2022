@@ -45,7 +45,7 @@ for (let x = 0; x < 3; x++) {
   }
 }
 
-OBJECTS.addPrinter(room);
+const [_printer, cubeCamera] = OBJECTS.addPrinter(room);
 OBJECTS.addShelf(room);
 
 scene.add(room);
@@ -68,7 +68,10 @@ scriptManager.dispatchInit();
 
 if (config.printerTesting) {
   const printer = scriptManager.ofType<Printer>(Printer)!;
-  printer.print(new SweepModelGenerator(generateShape("B1"), 180, 1), "Pattern05_1K_VarA.png");
+  printer.print(
+    new SweepModelGenerator(generateShape("B1"), 180, 1),
+    "Pattern05_1K_VarA.png"
+  );
 
   const orbit = scriptManager.ofType<OrbitScript>(OrbitScript)!;
   orbit.setCurrentCamera(1);
@@ -86,6 +89,9 @@ function animate() {
   let dt = clock.getDelta();
   requestAnimationFrame(animate);
   scriptManager.dispatchUpdate(dt);
+  if (cubeCamera !== undefined) {
+    cubeCamera.update(renderer, scene);
+  }
   renderer.render(scene, camera);
 }
 clock.start();

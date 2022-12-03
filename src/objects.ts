@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Object3D, RepeatWrapping, Scene, Vector2 } from "three";
+import { CubeCamera, Object3D, RepeatWrapping, Scene, Vector2 } from "three";
 import { loadTexture } from "./textures";
 
 export function addForklift(scene: Object3D) {
@@ -246,13 +246,38 @@ export function addPrinter(scene: Object3D) {
   obj.name = "printer";
 
   function addCube() {
-    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 20);
-    const material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 20, 5);
+    //const geometry = new THREE.SphereGeometry(0.5);
+    let cubeCamera: CubeCamera | undefined;
+
+    let envCube = new THREE.CubeTextureLoader()
+      .setPath("assets/textures/greyRoom1/")
+      .load([
+        "greyRoom1_front.jpg",
+        "greyRoom1_back.jpg",
+        "greyRoom1_top.jpg",
+        "greyRoom1_bottom.jpg",
+        "greyRoom1_right.jpg",
+        "greyRoom1_left.jpg",
+      ]);
+
+    //const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256);
+    //cubeRenderTarget.texture.type = THREE.HalfFloatType;
+
+    //cubeCamera = new THREE.CubeCamera(0.5, 1000, cubeRenderTarget);
+    //envCube = cubeRenderTarget.texture;
+
+    const material = new THREE.MeshStandardMaterial({
+      envMap: envCube,
+      metalness: 1,
+      roughness: 0.1,
+    });
     const cube = new THREE.Mesh(geometry, material);
+    //cube.add(cubeCamera)
     cube.position.set(0, 0.5, 0);
-    return cube;
+    return [cube, cubeCamera] as const;
   }
-  const cube = addCube();
+  const [cube, cubeCamera] = addCube();
 
   const platform = new Object3D();
   platform.position.set(0, 0.5, 0);
@@ -291,10 +316,10 @@ export function addPrinter(scene: Object3D) {
     head.name = "printer-head";
     head.position.set(0, 1, 0);
 
-    addLight(side / 2, -0.0375, side / 2)
-    addLight(-side / 2, -0.0375, side / 2)
-    addLight(-side / 2, -0.0375, -side / 2)
-    addLight(side / 2, -0.0375, -side / 2)
+    addLight(side / 2, -0.0375, side / 2);
+    addLight(-side / 2, -0.0375, side / 2);
+    addLight(-side / 2, -0.0375, -side / 2);
+    addLight(side / 2, -0.0375, -side / 2);
 
     function addHeadOffset() {
       const headOffset = new Object3D();
@@ -323,7 +348,7 @@ export function addPrinter(scene: Object3D) {
   addGuide(0.1);
   addGuide(-0.1);
 
-  return obj;
+  return [obj, cubeCamera] as const;
 }
 
 export function addShelf(scene: Object3D) {
