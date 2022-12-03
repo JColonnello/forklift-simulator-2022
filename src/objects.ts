@@ -29,14 +29,14 @@ export function addForklift(scene: Object3D) {
     const geometry = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 10, 1, true);
     geometry.rotateZ(Math.PI / 2);
     
-    const material = new THREE.MeshStandardMaterial({ color: 0x222222, wireframe: false });
+    const material = new THREE.MeshPhongMaterial({ color: 0x2A2930, wireframe: false });
     const wheel = new THREE.Mesh(geometry, material);
 
     function addCap(side: number) {
       const capGeometry = new THREE.CircleGeometry(geometry.parameters.radiusTop, geometry.parameters.radialSegments);
       capGeometry.rotateY(side * Math.PI / 2);
       capGeometry.translate(side * geometry.parameters.height / 2, 0, 0);
-      const capMaterial = new THREE.MeshStandardMaterial({ map: wheelTexture, wireframe: false });
+      const capMaterial = new THREE.MeshPhongMaterial({ map: wheelTexture });
       const cap = new THREE.Mesh(capGeometry, capMaterial);
       wheel.add(cap)
     }
