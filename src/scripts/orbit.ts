@@ -61,7 +61,7 @@ export class OrbitScript extends Script {
     //this.orbit.autoRotate = true;
     this.orbit.autoRotateSpeed = 2;
 
-    this.orbit.maxDistance = 8;
+    this.orbit.maxDistance = 15;
     this.orbit.minDistance = 0.1;
 
     this.orbit.enabled = false;

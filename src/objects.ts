@@ -91,7 +91,10 @@ export function addForklift(scene: Object3D) {
 
   function addEye(name: string, x: number) {
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.025, 10);
-    const material = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 100 });
+    const material = new THREE.MeshPhongMaterial({
+      color: 0xffffff,
+      shininess: 100,
+    });
     const eye = new THREE.Mesh(geometry, material);
     eye.name = name;
     eye.position.set(x * 0.35, 0.5, -0.6);
@@ -99,7 +102,10 @@ export function addForklift(scene: Object3D) {
 
     function addPupil() {
       const geometry = new THREE.CylinderGeometry(0.03, 0.03, 0.01, 10);
-      const material = new THREE.MeshPhongMaterial({ color: 0, shininess: 100 });
+      const material = new THREE.MeshPhongMaterial({
+        color: 0,
+        shininess: 100,
+      });
       const pupil = new THREE.Mesh(geometry, material);
       pupil.name = "pupil";
       pupil.position.setY(-0.027);
@@ -121,7 +127,7 @@ export function addForklift(scene: Object3D) {
 }
 
 export function addAmbientLight(scene: Scene) {
-  const light = new THREE.AmbientLight(0xffffff, 0.3);
+  const light = new THREE.AmbientLight(0xffffff, 0.7);
   scene.add(light);
 
   return light;
@@ -130,12 +136,17 @@ export function addAmbientLight(scene: Scene) {
 export function addLight(scene: Object3D, x: number, y: number, z: number) {
   const lightHolder = new Object3D();
 
-  const light = new THREE.PointLight(0xffffff, 1, 100);
+  const light = new THREE.SpotLight(0xffffff, 0.8, 0, 0.3, 1);
+  //light.target = scene.getObjectByName("forklift")!;
+  const lightTarget = new THREE.Object3D();
+  lightHolder.add(lightTarget);
+  lightTarget.position.add(new THREE.Vector3(0, -10, 0));
+  light.target = lightTarget;
 
-  const lightGeometry = new THREE.SphereGeometry(0.2);
+  const lightGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.1);
   const lightMaterial = new THREE.MeshBasicMaterial({ color: light.color });
   const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
-  lightMesh.position.setY(lightGeometry.parameters.radius);
+  lightMesh.position.setY(lightGeometry.parameters.radiusTop);
   lightMesh.add(light);
 
   lightHolder.position.set(x, y, z);
@@ -253,12 +264,37 @@ export function addPrinter(scene: Object3D) {
   scene.add(obj);
 
   function addHead() {
-    const geometry = new THREE.BoxGeometry(0.9, 0.025, 0.9);
+    function addLight(x: number, y: number, z: number) {
+      const lightHolder = new Object3D();
+
+      const light = new THREE.PointLight(0xffffff, 0.7, 2);
+
+      const lightGeometry = new THREE.SphereGeometry(0.05);
+      const lightMaterial = new THREE.MeshBasicMaterial({ color: light.color });
+      const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
+      lightMesh.position.setY(lightGeometry.parameters.radius);
+      lightMesh.add(light);
+
+      lightHolder.position.set(x, y, z);
+      lightHolder.add(lightMesh);
+
+      head.add(lightHolder);
+
+      return light;
+    }
+
+    const side = 0.9;
+    const geometry = new THREE.BoxGeometry(side, 0.025, side);
     geometry.translate(0, geometry.parameters.height / 2, 0);
     const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
     const head = new THREE.Mesh(geometry, material);
     head.name = "printer-head";
     head.position.set(0, 1, 0);
+
+    addLight(side / 2, -0.0375, side / 2)
+    addLight(-side / 2, -0.0375, side / 2)
+    addLight(-side / 2, -0.0375, -side / 2)
+    addLight(side / 2, -0.0375, -side / 2)
 
     function addHeadOffset() {
       const headOffset = new Object3D();

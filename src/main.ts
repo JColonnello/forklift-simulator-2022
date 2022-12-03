@@ -35,12 +35,15 @@ const clock = new THREE.Clock();
 let room = new Object3D();
 room.name = "room";
 room.position.set(0, -0.5, 0);
-OBJECTS.addRoom(room, 10, 10, 10);
+OBJECTS.addRoom(room, 20, 20, 10);
 OBJECTS.addForklift(room);
 
 OBJECTS.addAmbientLight(scene);
-OBJECTS.addLight(room, -3, 3, -3);
-OBJECTS.addLight(room, 3, 3, 3);
+for (let x = 0; x < 3; x++) {
+  for (let y = 0; y < 2; y++) {
+    OBJECTS.addLight(room, 6 * (x - 1), 9, 6 * (y - 0.5));
+  }
+}
 
 OBJECTS.addPrinter(room);
 OBJECTS.addShelf(room);
