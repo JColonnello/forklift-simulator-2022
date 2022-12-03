@@ -264,11 +264,22 @@ function addForklift(scene2) {
   addRoller(-1);
   addRoller(1);
   obj.add(cube);
+  const wheelTexture = new THREE.TextureLoader().load("assets/textures/rueda.jpg");
   function addWheel(name, x, y) {
-    const geometry2 = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 10);
+    const geometry2 = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 10, 1, true);
     geometry2.rotateZ(Math.PI / 2);
-    const material22 = new THREE.MeshStandardMaterial({ color: 1118481 });
+    const material22 = new THREE.MeshStandardMaterial({ color: 2236962, wireframe: false });
     const wheel = new THREE.Mesh(geometry2, material22);
+    function addCap(side) {
+      const capGeometry = new THREE.CircleGeometry(geometry2.parameters.radiusTop, geometry2.parameters.radialSegments);
+      capGeometry.rotateY(side * Math.PI / 2);
+      capGeometry.translate(side * geometry2.parameters.height / 2, 0, 0);
+      const capMaterial = new THREE.MeshStandardMaterial({ map: wheelTexture, wireframe: false });
+      const cap = new THREE.Mesh(capGeometry, capMaterial);
+      wheel.add(cap);
+    }
+    addCap(-1);
+    addCap(1);
     wheel.position.set(x * 0.4, 0.25, y * -0.4);
     wheel.name = name;
     wheel.rotation.order = "ZYX";
