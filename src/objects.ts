@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Object3D, Scene } from "three";
+import { Object3D, RepeatWrapping, Scene, Vector2, Wrapping } from "three";
 
 const textureLoader = new THREE.TextureLoader();
 
@@ -10,9 +10,13 @@ return textureLoader.load(`assets/textures/${name}`);
 
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();
-  obj.name = 'forklift';
-  const geometry = new THREE.BoxGeometry(.6, .35, 1.2);
-  const material = new THREE.MeshStandardMaterial({ color: 0x22a592 });
+  obj.name = "forklift";
+  const geometry = new THREE.BoxGeometry(0.6, 0.35, 1.2);
+  const texture = loadTexture("texturaGrua.jpg");
+  texture.repeat = new Vector2(2, 2);
+  texture.wrapS = RepeatWrapping;
+  texture.wrapT = RepeatWrapping;
+  const material = new THREE.MeshPhongMaterial({ map: texture });
   const cube = new THREE.Mesh(geometry, material);
   cube.position.set(0, .5, 0);
 
