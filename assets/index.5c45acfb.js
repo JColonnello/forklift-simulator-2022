@@ -24,7 +24,7 @@ var __privateSet = (obj, member, value, setter) => {
 };
 var _height, _platform, _head, _headOffset;
 import * as THREE from "three";
-import { Object3D, Vector3, Vector2, ExtrudeGeometry, Quaternion, LatheGeometry, Shape, Plane, MeshStandardMaterial, DoubleSide, Mesh, Euler } from "three";
+import { Object3D, Vector2, RepeatWrapping, Vector3, ExtrudeGeometry, Quaternion, LatheGeometry, Shape, Plane, MeshPhongMaterial, DoubleSide, Mesh, Euler } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from "dat.gui";
 (function polyfill() {
@@ -150,7 +150,10 @@ function normalize(sm) {
   }
   if (isScriptMapWithChildren(sm)) {
     let scripts = (_a = sm.scripts) != null ? _a : [];
-    return { scripts: scripts instanceof Array ? scripts : [scripts], children: sm.children };
+    return {
+      scripts: scripts instanceof Array ? scripts : [scripts],
+      children: sm.children
+    };
   }
   return { scripts: [], children: sm };
 }
@@ -247,16 +250,27 @@ class ScriptManager {
     this.scripts.forEach((s) => s.init());
   }
 }
+const textureLoader = new THREE.TextureLoader();
+function loadTexture(name) {
+  return textureLoader.load(`assets/textures/${name}`);
+}
 function addForklift(scene2) {
   let obj = new Object3D();
   obj.name = "forklift";
   const geometry = new THREE.BoxGeometry(0.6, 0.35, 1.2);
-  const material2 = new THREE.MeshStandardMaterial({ color: 2270610 });
+  const texture = loadTexture("texturaGrua.jpg");
+  texture.repeat = new Vector2(2, 2);
+  texture.wrapS = RepeatWrapping;
+  texture.wrapT = RepeatWrapping;
+  const material2 = new THREE.MeshPhongMaterial({ map: texture });
   const cube = new THREE.Mesh(geometry, material2);
   cube.position.set(0, 0.5, 0);
   function addRoller(pos) {
     const geometry2 = new THREE.BoxGeometry(0.04, 2.1, 0.04);
-    const material22 = new THREE.MeshStandardMaterial({ color: 11184810 });
+    const material22 = new THREE.MeshPhongMaterial({
+      color: 11184810,
+      shininess: 100
+    });
     const roller = new THREE.Mesh(geometry2, material22);
     roller.position.set(pos * 0.2, 0.8, -0.6);
     cube.add(roller);
@@ -264,14 +278,28 @@ function addForklift(scene2) {
   addRoller(-1);
   addRoller(1);
   obj.add(cube);
-  const wheelTexture = new THREE.TextureLoader().load("assets/textures/rueda.jpg");
+  const wheelTexture = loadTexture("rueda.jpg");
   function addWheel(name, x, y) {
-    const geometry2 = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 10, 1, true);
+    const wheelRadius = 0.25;
+    const geometry2 = new THREE.CylinderGeometry(
+      wheelRadius,
+      wheelRadius,
+      0.2,
+      10,
+      1,
+      true
+    );
     geometry2.rotateZ(Math.PI / 2);
-    const material22 = new THREE.MeshPhongMaterial({ color: 2763056, wireframe: false });
+    const material22 = new THREE.MeshPhongMaterial({
+      color: 2763056,
+      wireframe: false
+    });
     const wheel = new THREE.Mesh(geometry2, material22);
     function addCap(side) {
-      const capGeometry = new THREE.CircleGeometry(geometry2.parameters.radiusTop, geometry2.parameters.radialSegments);
+      const capGeometry = new THREE.CircleGeometry(
+        geometry2.parameters.radiusTop,
+        geometry2.parameters.radialSegments
+      );
       capGeometry.rotateY(side * Math.PI / 2);
       capGeometry.translate(side * geometry2.parameters.height / 2, 0, 0);
       const capMaterial = new THREE.MeshPhongMaterial({ map: wheelTexture });
@@ -280,7 +308,7 @@ function addForklift(scene2) {
     }
     addCap(-1);
     addCap(1);
-    wheel.position.set(x * 0.4, 0.25, y * -0.4);
+    wheel.position.set(x * 0.4, wheelRadius, y * -0.4);
     wheel.name = name;
     wheel.rotation.order = "ZYX";
     obj.add(wheel);
@@ -294,7 +322,7 @@ function addForklift(scene2) {
     trayOrigin.position.set(0, 0.3, -0.8);
     const geometry2 = new THREE.BoxGeometry(0.5, 0.05, 0.5);
     geometry2.translate(0, -0.05 / 2, 0);
-    const material22 = new THREE.MeshStandardMaterial({ color: 16688663 });
+    const material22 = new THREE.MeshPhongMaterial({ color: 16688663 });
     const tray = new THREE.Mesh(geometry2, material22);
     tray.name = "tray";
     trayOrigin.add(tray);
@@ -303,14 +331,20 @@ function addForklift(scene2) {
   addTray();
   function addEye(name, x) {
     const geometry2 = new THREE.CylinderGeometry(0.1, 0.1, 0.025, 10);
-    const material22 = new THREE.MeshStandardMaterial({ color: 16777215 });
+    const material22 = new THREE.MeshPhongMaterial({
+      color: 16777215,
+      shininess: 100
+    });
     const eye = new THREE.Mesh(geometry2, material22);
     eye.name = name;
     eye.position.set(x * 0.35, 0.5, -0.6);
     eye.rotateX(Math.PI / 2);
     function addPupil() {
       const geometry3 = new THREE.CylinderGeometry(0.03, 0.03, 0.01, 10);
-      const material3 = new THREE.MeshStandardMaterial({ color: 0 });
+      const material3 = new THREE.MeshPhongMaterial({
+        color: 0,
+        shininess: 100
+      });
       const pupil = new THREE.Mesh(geometry3, material3);
       pupil.name = "pupil";
       pupil.position.setY(-0.027);
@@ -325,17 +359,21 @@ function addForklift(scene2) {
   return obj;
 }
 function addAmbientLight(scene2) {
-  const light = new THREE.AmbientLight(16777215, 0.3);
+  const light = new THREE.AmbientLight(16777215, 0.7);
   scene2.add(light);
   return light;
 }
 function addLight(scene2, x, y, z) {
   const lightHolder = new Object3D();
-  const light = new THREE.PointLight(16777215, 1, 100);
-  const lightGeometry = new THREE.SphereGeometry(0.2);
+  const light = new THREE.SpotLight(16777215, 0.8, 0, 0.3, 1);
+  const lightTarget = new THREE.Object3D();
+  lightHolder.add(lightTarget);
+  lightTarget.position.add(new THREE.Vector3(0, -10, 0));
+  light.target = lightTarget;
+  const lightGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.1);
   const lightMaterial = new THREE.MeshBasicMaterial({ color: light.color });
   const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
-  lightMesh.position.setY(lightGeometry.parameters.radius);
+  lightMesh.position.setY(lightGeometry.parameters.radiusTop);
   lightMesh.add(light);
   lightHolder.position.set(x, y, z);
   lightHolder.add(lightMesh);
@@ -354,9 +392,40 @@ function addPlane(scene2, x, y, z, width, height, rx, ry, material2) {
 function addRoom(scene2, length, width, height) {
   let obj = new THREE.Object3D();
   obj.position.set(0, height / 2, 0);
-  addPlane(obj, 0, -height / 2, 0, width, length, -1, 0, new THREE.MeshStandardMaterial({ color: 6689041 }));
-  addPlane(obj, 0, height / 2, 0, width, length, 1, 0, new THREE.MeshStandardMaterial({ color: 2236962 }));
-  let wallMaterial = new THREE.MeshStandardMaterial({ color: 2236962 });
+  const floorTexture = loadTexture("StoneTilesFloor01_1K_BaseColor.png");
+  floorTexture.repeat = new Vector2(5, 5);
+  floorTexture.wrapS = RepeatWrapping;
+  floorTexture.wrapT = RepeatWrapping;
+  addPlane(
+    obj,
+    0,
+    -height / 2,
+    0,
+    width,
+    length,
+    -1,
+    0,
+    new THREE.MeshPhongMaterial({ map: floorTexture })
+  );
+  addPlane(
+    obj,
+    0,
+    height / 2,
+    0,
+    width,
+    length,
+    1,
+    0,
+    new THREE.MeshPhongMaterial({ color: 2236962 })
+  );
+  const wallTexture = loadTexture("CorrugatedMetalPanel02_1K_BaseColor.png");
+  wallTexture.repeat = new Vector2(3, 3);
+  wallTexture.wrapS = RepeatWrapping;
+  wallTexture.wrapT = RepeatWrapping;
+  let wallMaterial = new THREE.MeshPhongMaterial({
+    color: 4473924,
+    map: wallTexture
+  });
   addPlane(obj, 0, 0, -length / 2, width, height, 0, 0, wallMaterial);
   addPlane(obj, 0, 0, length / 2, width, height, 2, 0, wallMaterial);
   addPlane(obj, -width / 2, 0, 0, length, height, 0, 1, wallMaterial);
@@ -369,13 +438,26 @@ function addPrinter(scene2) {
   obj.position.set(3, 0, 3);
   obj.name = "printer";
   function addCube() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material2 = new THREE.MeshStandardMaterial({ color: 255 });
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 20, 5);
+    let cubeCamera22;
+    let envCube = new THREE.CubeTextureLoader().setPath("assets/textures/greyRoom1/").load([
+      "greyRoom1_front.jpg",
+      "greyRoom1_back.jpg",
+      "greyRoom1_top.jpg",
+      "greyRoom1_bottom.jpg",
+      "greyRoom1_right.jpg",
+      "greyRoom1_left.jpg"
+    ]);
+    const material2 = new THREE.MeshStandardMaterial({
+      envMap: envCube,
+      metalness: 1,
+      roughness: 0.1
+    });
     const cube2 = new THREE.Mesh(geometry, material2);
     cube2.position.set(0, 0.5, 0);
-    return cube2;
+    return [cube2, cubeCamera22];
   }
-  const cube = addCube();
+  const [cube, cubeCamera2] = addCube();
   const platform = new Object3D();
   platform.position.set(0, 0.5, 0);
   platform.name = "printer-platform";
@@ -383,12 +465,30 @@ function addPrinter(scene2) {
   obj.add(cube);
   scene2.add(obj);
   function addHead() {
-    const geometry = new THREE.BoxGeometry(1, 0.05, 1);
+    function addLight2(x, y, z) {
+      const lightHolder = new Object3D();
+      const light = new THREE.PointLight(16777215, 0.7, 2);
+      const lightGeometry = new THREE.SphereGeometry(0.05);
+      const lightMaterial = new THREE.MeshBasicMaterial({ color: light.color });
+      const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
+      lightMesh.position.setY(lightGeometry.parameters.radius);
+      lightMesh.add(light);
+      lightHolder.position.set(x, y, z);
+      lightHolder.add(lightMesh);
+      head.add(lightHolder);
+      return light;
+    }
+    const side = 0.9;
+    const geometry = new THREE.BoxGeometry(side, 0.025, side);
     geometry.translate(0, geometry.parameters.height / 2, 0);
-    const material2 = new THREE.MeshStandardMaterial({ color: 65280 });
+    const material2 = new THREE.MeshPhongMaterial({ color: 65280 });
     const head = new THREE.Mesh(geometry, material2);
     head.name = "printer-head";
     head.position.set(0, 1, 0);
+    addLight2(side / 2, -0.0375, side / 2);
+    addLight2(-side / 2, -0.0375, side / 2);
+    addLight2(-side / 2, -0.0375, -side / 2);
+    addLight2(side / 2, -0.0375, -side / 2);
     function addHeadOffset() {
       const headOffset = new Object3D();
       headOffset.name = "printer-head-offset";
@@ -398,8 +498,11 @@ function addPrinter(scene2) {
     platform.add(head);
   }
   function addGuide(p) {
-    const geometry = new THREE.CylinderGeometry(0.05, 0.05, 1);
-    const material2 = new THREE.MeshStandardMaterial({ color: 11184810 });
+    const geometry = new THREE.CylinderGeometry(0.025, 0.025, 1);
+    const material2 = new THREE.MeshPhongMaterial({
+      color: 11184810,
+      shininess: 100
+    });
     const guide = new THREE.Mesh(geometry, material2);
     guide.name = "printer-guide";
     guide.position.set(0.4, 0.5, p);
@@ -408,7 +511,7 @@ function addPrinter(scene2) {
   addHead();
   addGuide(0.1);
   addGuide(-0.1);
-  return obj;
+  return [obj, cubeCamera2];
 }
 function addShelf(scene2) {
   let obj = new THREE.Object3D();
@@ -516,7 +619,12 @@ class ModelGenerator {
   }
 }
 function mirrorVertices(vertices, axis) {
-  return [...vertices, ...vertices.slice(0, -1).map((v) => new Vector3(v.x, v.y).reflect(new Vector3(axis.x, axis.y).normalize())).map((v) => new Vector2(v.x, v.y)).reverse()];
+  return [
+    ...vertices,
+    ...vertices.slice(0, -1).map(
+      (v) => new Vector3(v.x, v.y).reflect(new Vector3(axis.x, axis.y).normalize())
+    ).map((v) => new Vector2(v.x, v.y)).reverse()
+  ];
 }
 class ShapeWithSubdividedLines extends Shape {
   lineTo(x, y) {
@@ -536,7 +644,11 @@ function generateShape(shapeType) {
             shape.moveTo(0, 0);
             shape.lineTo(-4 / 12, 0);
             shape.lineTo(-4 / 12, 2 / 12);
-            shape.splineThru([new Vector2(-1 / 12, 3 / 12), new Vector2(-3 / 12, 6 / 12), new Vector2(-1 / 12, 6 / 12 + 6 / 12 - 3 / 12)]);
+            shape.splineThru([
+              new Vector2(-1 / 12, 3 / 12),
+              new Vector2(-3 / 12, 6 / 12),
+              new Vector2(-1 / 12, 6 / 12 + 6 / 12 - 3 / 12)
+            ]);
             shape.lineTo(-4 / 12, 1 - 2 / 12);
             shape.lineTo(-4 / 12, 1);
             shape.lineTo(0, 1);
@@ -552,11 +664,23 @@ function generateShape(shapeType) {
           __publicField(this, "generate", () => {
             let shape = new ShapeWithSubdividedLines();
             shape.moveTo(0, 0);
-            shape.splineThru([new Vector2(-30 / 175, 1 / 175), new Vector2(-52 / 175, 24 / 175), new Vector2(-32 / 175, 88 / 175)]);
+            shape.splineThru([
+              new Vector2(-30 / 175, 1 / 175),
+              new Vector2(-52 / 175, 24 / 175),
+              new Vector2(-32 / 175, 88 / 175)
+            ]);
             shape.lineTo(-32 / 175, 103 / 175);
-            shape.splineThru([new Vector2(-39 / 175, 120 / 175), new Vector2(-50 / 175, 138 / 175), new Vector2(-55 / 175, 148 / 175)]);
+            shape.splineThru([
+              new Vector2(-39 / 175, 120 / 175),
+              new Vector2(-50 / 175, 138 / 175),
+              new Vector2(-55 / 175, 148 / 175)
+            ]);
             shape.lineTo(-55 / 175, 155 / 175);
-            shape.splineThru([new Vector2(-50 / 175, 159 / 175), new Vector2(-40 / 175, 165 / 175), new Vector2(-38 / 175, 175 / 175)]);
+            shape.splineThru([
+              new Vector2(-50 / 175, 159 / 175),
+              new Vector2(-40 / 175, 165 / 175),
+              new Vector2(-38 / 175, 175 / 175)
+            ]);
             return shape;
           });
         }
@@ -572,9 +696,21 @@ function generateShape(shapeType) {
             shape.lineTo(-91 / 179, 0);
             shape.lineTo(-23 / 179, 32 / 179);
             shape.lineTo(-23 / 179, 48 / 179);
-            shape.splineThru([new Vector2(-45 / 179, 57 / 179), new Vector2(-65 / 179, 70 / 179), new Vector2(-73 / 179, 87 / 179)]);
-            shape.splineThru([new Vector2(-73 / 179, 122 / 179), new Vector2(-72 / 179, 133 / 179), new Vector2(-72 / 179, 143 / 179)]);
-            shape.splineThru([new Vector2(-61 / 179, 158 / 179), new Vector2(-42 / 179, 162 / 179), new Vector2(-32 / 179, 179 / 179)]);
+            shape.splineThru([
+              new Vector2(-45 / 179, 57 / 179),
+              new Vector2(-65 / 179, 70 / 179),
+              new Vector2(-73 / 179, 87 / 179)
+            ]);
+            shape.splineThru([
+              new Vector2(-73 / 179, 122 / 179),
+              new Vector2(-72 / 179, 133 / 179),
+              new Vector2(-72 / 179, 143 / 179)
+            ]);
+            shape.splineThru([
+              new Vector2(-61 / 179, 158 / 179),
+              new Vector2(-42 / 179, 162 / 179),
+              new Vector2(-32 / 179, 179 / 179)
+            ]);
             return shape;
           });
         }
@@ -588,11 +724,31 @@ function generateShape(shapeType) {
             let shape = new ShapeWithSubdividedLines();
             shape.moveTo(0, 0);
             shape.lineTo(-40 / 180, 0);
-            shape.splineThru([new Vector2(-53 / 180, 4 / 180), new Vector2(-61 / 180, 14 / 180), new Vector2(-63 / 180, 28 / 180)]);
-            shape.splineThru([new Vector2(-54 / 180, 39 / 180), new Vector2(-33 / 180, 44 / 180), new Vector2(-24 / 180, 55 / 180)]);
-            shape.splineThru([new Vector2(-26 / 180, 75 / 180), new Vector2(-49 / 180, 93 / 180), new Vector2(-95 / 180, 102 / 180)]);
-            shape.splineThru([new Vector2(-69 / 180, 107 / 180), new Vector2(-48 / 180, 120 / 180), new Vector2(-43 / 180, 145 / 180)]);
-            shape.splineThru([new Vector2(-35 / 180, 163 / 180), new Vector2(-20 / 180, 176 / 180), new Vector2(-3 / 180, 180 / 180)]);
+            shape.splineThru([
+              new Vector2(-53 / 180, 4 / 180),
+              new Vector2(-61 / 180, 14 / 180),
+              new Vector2(-63 / 180, 28 / 180)
+            ]);
+            shape.splineThru([
+              new Vector2(-54 / 180, 39 / 180),
+              new Vector2(-33 / 180, 44 / 180),
+              new Vector2(-24 / 180, 55 / 180)
+            ]);
+            shape.splineThru([
+              new Vector2(-26 / 180, 75 / 180),
+              new Vector2(-49 / 180, 93 / 180),
+              new Vector2(-95 / 180, 102 / 180)
+            ]);
+            shape.splineThru([
+              new Vector2(-69 / 180, 107 / 180),
+              new Vector2(-48 / 180, 120 / 180),
+              new Vector2(-43 / 180, 145 / 180)
+            ]);
+            shape.splineThru([
+              new Vector2(-35 / 180, 163 / 180),
+              new Vector2(-20 / 180, 176 / 180),
+              new Vector2(-3 / 180, 180 / 180)
+            ]);
             return shape;
           });
         }
@@ -623,7 +779,9 @@ function generateShape(shapeType) {
             shape.moveTo(Math.cos(ang), Math.sin(ang));
             for (let i = 1; i < 7 * 2; ) {
               ang = Math.PI / 7 * i++;
-              const p1 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(0.6);
+              const p1 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(
+                0.6
+              );
               ang = Math.PI / 7 * i++;
               const p2 = new Vector2(Math.cos(ang), Math.sin(ang));
               shape.splineThru([p1, p2]);
@@ -649,7 +807,9 @@ function generateShape(shapeType) {
             vectors = mirrorVertices(vectors, new Vector2(1, 1));
             const center = new Vector2(0, 0);
             for (let i = 0; i < 4; i++) {
-              const v = vectors.map((v2) => v2.clone().rotateAround(center, Math.PI / 2 * i));
+              const v = vectors.map(
+                (v2) => v2.clone().rotateAround(center, Math.PI / 2 * i)
+              );
               shape.lineTo(v[0].x, v[0].y);
               shape.lineTo(v[1].x, v[1].y);
               shape.lineTo(v[2].x, v[2].y);
@@ -672,11 +832,19 @@ function generateShape(shapeType) {
             shape.lineTo(0.5, 0.65);
             let v = new Vector2(0.5, 0.65);
             let center = new Vector2(0, 0.65);
-            shape.splineThru(new Array(5).fill(0).map((_, i, a) => v.clone().rotateAround(center, Math.PI / a.length * (i + 1))));
+            shape.splineThru(
+              new Array(5).fill(0).map(
+                (_, i, a) => v.clone().rotateAround(center, Math.PI / a.length * (i + 1))
+              )
+            );
             shape.lineTo(-0.5, -0.65);
             v = new Vector2(-0.5, -0.65);
             center = new Vector2(0, -0.65);
-            shape.splineThru(new Array(5).fill(0).map((_, i, a) => v.clone().rotateAround(center, Math.PI / a.length * (i + 1))));
+            shape.splineThru(
+              new Array(5).fill(0).map(
+                (_, i, a) => v.clone().rotateAround(center, Math.PI / a.length * (i + 1))
+              )
+            );
             return shape;
           });
         }
@@ -749,12 +917,33 @@ class RevolveModelGenerator extends ModelGenerator {
     return 1;
   }
 }
+const textures = {
+  Marble: {
+    A: "Marble03_1K_BaseColor.png",
+    B: "Marble09_1K_BaseColor.png"
+  },
+  "Pattern 1": {
+    A: "Pattern05_1K_VarA.png",
+    B: "Pattern05_1K_VarB.png",
+    C: "Pattern05_1K_VarC.png"
+  },
+  "Pattern 2": {
+    A: "Pattern02_1K_VarA.png",
+    B: "Pattern02_1K_VarB.png",
+    C: "Pattern02_1K_VarC.png"
+  },
+  "Pattern 3": {
+    A: "patron3.png"
+  }
+};
 let printOptions = {
   type: "Revolve",
   sweepShape: "B1",
   revolveShape: "A1",
   torsionAngle: 0,
-  height: 0.5
+  height: 0.5,
+  texturePattern: "Pattern 1",
+  textureVariant: "A"
 };
 function setupGui(startPring) {
   const gui = new GUI();
@@ -770,6 +959,22 @@ function setupGui(startPring) {
         break;
     }
   }
+  function setTexturePattern(pattern) {
+    const options = Object.keys(textures[pattern]);
+    let element = textureVariant.domElement.children[0];
+    element.innerHTML = "";
+    element.value = options[0];
+    printOptions.textureVariant = options[0];
+    for (const variant of options) {
+      let option = document.createElement("option");
+      option.setAttribute("value", variant);
+      option.innerHTML = variant;
+      element.appendChild(option);
+    }
+  }
+  gui.add(printOptions, "texturePattern", Object.keys(textures)).name("Texture").onFinishChange(setTexturePattern);
+  const textureVariant = gui.add(printOptions, "textureVariant", []).name("Texture Variant");
+  setTexturePattern(printOptions.texturePattern);
   const solidType = gui.add(printOptions, "type", solidTypes).name("Solid Type").onFinishChange(setSolidType);
   const revolveFolder = gui.addFolder("Revolve");
   revolveFolder.add(printOptions, "revolveShape", revolveShapes).name("Shape");
@@ -779,18 +984,29 @@ function setupGui(startPring) {
   sweepFolder.add(printOptions, "torsionAngle", 0, 360, 1).name("Torsion");
   sweepFolder.add(printOptions, "height", 0, 2).name("Height");
   sweepFolder.open();
-  gui.add({ button: () => {
-    let modelLayerGenerator;
-    switch (printOptions.type) {
-      case "Sweep":
-        modelLayerGenerator = new SweepModelGenerator(generateShape(printOptions.sweepShape), printOptions.torsionAngle, printOptions.height);
-        break;
-      case "Revolve":
-        modelLayerGenerator = new RevolveModelGenerator(generateShape(printOptions.revolveShape));
-        break;
-    }
-    startPring(modelLayerGenerator);
-  } }, "button").name("Generate");
+  gui.add(
+    {
+      button: () => {
+        let modelLayerGenerator;
+        switch (printOptions.type) {
+          case "Sweep":
+            modelLayerGenerator = new SweepModelGenerator(
+              generateShape(printOptions.sweepShape),
+              printOptions.torsionAngle,
+              printOptions.height
+            );
+            break;
+          case "Revolve":
+            modelLayerGenerator = new RevolveModelGenerator(
+              generateShape(printOptions.revolveShape)
+            );
+            break;
+        }
+        startPring(modelLayerGenerator, textures[printOptions.texturePattern][printOptions.textureVariant]);
+      }
+    },
+    "button"
+  ).name("Generate");
   gui.open();
   setSolidType(solidType.getValue());
 }
@@ -881,7 +1097,7 @@ const _Printer = class extends Script {
     this.platform.add(printingObject);
     this.state = { stage: "RESETTING", progress: 0 };
   }
-  print(modelGenerator) {
+  print(modelGenerator, textureName) {
     const printingObject = this.printingObject;
     if (printingObject !== void 0) {
       printingObject.removeFromParent();
@@ -894,8 +1110,12 @@ const _Printer = class extends Script {
     const height = modelGenerator.height * _Printer.printScale;
     this.lastPieceHeight = height;
     this.removePrintingObject();
-    const material2 = new MeshStandardMaterial({
-      color: 16737792,
+    const texture = loadTexture(textureName);
+    texture.wrapS = RepeatWrapping;
+    texture.wrapT = RepeatWrapping;
+    texture.repeat = new Vector2(4, 4);
+    const material2 = new MeshPhongMaterial({
+      map: texture,
       side: DoubleSide,
       clippingPlanes: [new Plane()]
     });
@@ -954,7 +1174,7 @@ class OrbitScript extends Script {
     this.orbit.dampingFactor = 0.06;
     this.orbit.enablePan = false;
     this.orbit.autoRotateSpeed = 2;
-    this.orbit.maxDistance = 8;
+    this.orbit.maxDistance = 15;
     this.orbit.minDistance = 0.1;
     this.orbit.enabled = false;
     this.keyManager = this.scriptManager.ofType(KeyManager);
@@ -1108,7 +1328,9 @@ class TrayScript extends Script {
     this.holding = object;
   }
   drop() {
-    const cells = this.getShelfCellObjects().filter((c) => c.children.length == 0);
+    const cells = this.getShelfCellObjects().filter(
+      (c) => c.children.length == 0
+    );
     const object = this.getClosestObjectInRange(cells, distanceTreshold);
     if (object != null) {
       this.holding.removeFromParent();
@@ -1118,7 +1340,10 @@ class TrayScript extends Script {
   }
   grabOrDrop() {
     if (this.holding == null) {
-      const object = this.getClosestObjectInRange(this.getPrintedObjects(), distanceTreshold);
+      const object = this.getClosestObjectInRange(
+        this.getPrintedObjects(),
+        distanceTreshold
+      );
       if (object != null) {
         this.grab(object);
       }
@@ -1149,17 +1374,20 @@ class ForkliftScript extends Script {
     __publicField(this, "speed", 0);
     __publicField(this, "steeringPosition", 0);
   }
+  getWheel(name) {
+    return this.object.getObjectByName(name);
+  }
   get frontRightWheel() {
-    return this.object.getObjectByName("front-right");
+    return this.getWheel("front-right");
   }
   get frontLeftWheel() {
-    return this.object.getObjectByName("front-left");
+    return this.getWheel("front-left");
   }
   get backRightWheel() {
-    return this.object.getObjectByName("back-right");
+    return this.getWheel("back-right");
   }
   get backLeftWheel() {
-    return this.object.getObjectByName("back-left");
+    return this.getWheel("back-left");
   }
   get childrenScripts() {
     return {
@@ -1199,9 +1427,15 @@ class ForkliftScript extends Script {
     const steeringMultiplier = 0.3;
     this.frontRightWheel.rotation.y = -this.steeringPosition * steeringMultiplier;
     this.frontLeftWheel.rotation.y = -this.steeringPosition * steeringMultiplier;
-    const wheels = [this.frontLeftWheel, this.frontRightWheel, this.backLeftWheel, this.backRightWheel];
+    const wheels = [
+      this.frontLeftWheel,
+      this.frontRightWheel,
+      this.backLeftWheel,
+      this.backRightWheel
+    ];
     for (const wheel of wheels) {
-      wheel.rotateX(this.speed * -0.01);
+      const rad = wheel.geometry.parameters.radiusTop;
+      wheel.rotateX(-(this.speed * dt) / rad);
     }
   }
 }
@@ -1212,8 +1446,8 @@ const cellCols = 8;
 const legHeight = 0.5;
 const topExtraHeight = 0.025;
 const thickness = 0.05;
-const material = new THREE.MeshStandardMaterial({ color: 26367 });
-const pilarMaterial = new THREE.MeshStandardMaterial({ color: 11206400 });
+const material = new THREE.MeshPhongMaterial({ color: 26367 });
+const pilarMaterial = new THREE.MeshPhongMaterial({ color: 11206400 });
 class ShelfScript extends Script {
   addCells() {
     const obj = new Object3D();
@@ -1303,16 +1537,26 @@ class Root extends Script {
   }
   get childrenScripts() {
     return {
-      scripts: [KeyManager, OrbitScript.bind(null, this.orbit, this.targets.map(({ objectName, orbit: orbit2 }) => ({ object: this.object.getObjectByName(objectName), orbit: orbit2 })))],
+      scripts: [
+        KeyManager,
+        OrbitScript.bind(
+          null,
+          this.orbit,
+          this.targets.map(({ objectName, orbit: orbit2 }) => ({
+            object: this.object.getObjectByName(objectName),
+            orbit: orbit2
+          }))
+        )
+      ],
       children: {
         room: RoomScript
       }
     };
   }
 }
-setupGui((generator) => {
+setupGui((generator, texture) => {
   const script = scriptManager.ofType(Printer);
-  script == null ? void 0 : script.print(generator);
+  script == null ? void 0 : script.print(generator, texture);
 });
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -1332,12 +1576,15 @@ const clock = new THREE.Clock();
 let room = new Object3D();
 room.name = "room";
 room.position.set(0, -0.5, 0);
-addRoom(room, 10, 10, 10);
+addRoom(room, 20, 20, 10);
 addForklift(room);
 addAmbientLight(scene);
-addLight(room, -3, 3, -3);
-addLight(room, 3, 3, 3);
-addPrinter(room);
+for (let x = 0; x < 3; x++) {
+  for (let y = 0; y < 2; y++) {
+    addLight(room, 6 * (x - 1), 9, 6 * (y - 0.5));
+  }
+}
+const [_printer, cubeCamera] = addPrinter(room);
 addShelf(room);
 scene.add(room);
 addCameras(scene);
@@ -1349,15 +1596,15 @@ function onWindowResize() {
 window.addEventListener("resize", onWindowResize);
 let scriptManager = new ScriptManager();
 scriptManager.setupEventListeners();
-scriptManager.addScript(
-  Root.bind(null, orbit),
-  scene
-);
+scriptManager.addScript(Root.bind(null, orbit), scene);
 scriptManager.dispatchInit();
 function animate() {
   let dt = clock.getDelta();
   requestAnimationFrame(animate);
   scriptManager.dispatchUpdate(dt);
+  if (cubeCamera !== void 0) {
+    cubeCamera.update(renderer, scene);
+  }
   renderer.render(scene, camera);
 }
 clock.start();
