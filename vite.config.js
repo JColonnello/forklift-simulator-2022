@@ -6,10 +6,7 @@ export default defineConfig({
   build: {
     minify: false,
     rollupOptions: {
-      external: [
-        /three.*/,
-        "dat.gui",
-      ]
-    }
-  }
+      external: [/three.*/, "dat.gui"],
+    },
+  },
 });

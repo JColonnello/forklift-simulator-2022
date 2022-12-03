@@ -1,20 +1,19 @@
-import {Object3D} from "three";
-import {Key, Script} from "./script";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {ScriptManager} from "./scriptManager";
-import {KeyManager} from "./keyManager";
-
+import { Object3D } from "three";
+import { Key, Script } from "./script";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { ScriptManager } from "./scriptManager";
+import { KeyManager } from "./keyManager";
 
 export type CameraTarget = {
-  object: Object3D,
-  orbit: boolean,
+  object: Object3D;
+  orbit: boolean;
 };
 
 function zoom(orbit: OrbitControls, delta: number) {
   let prevZoomSpeed = orbit.zoomSpeed;
   orbit.zoomSpeed = delta;
-  const event = new WheelEvent('wheel', {deltaY: 0.1});
-  document.querySelector('canvas')!.dispatchEvent(event);
+  const event = new WheelEvent("wheel", { deltaY: 0.1 });
+  document.querySelector("canvas")!.dispatchEvent(event);
   orbit.zoomSpeed = prevZoomSpeed;
 }
 
@@ -25,13 +24,28 @@ export class OrbitScript extends Script {
   keyManager?: KeyManager;
 
   constructor(scene: Object3D, sm: ScriptManager);
-  constructor(orbit: OrbitControls, targets: CameraTarget[], scene: Object3D, sm: ScriptManager);
+  constructor(
+    orbit: OrbitControls,
+    targets: CameraTarget[],
+    scene: Object3D,
+    sm: ScriptManager
+  );
 
-  constructor(orbit: OrbitControls | Object3D, targets: CameraTarget[] | ScriptManager, scene?: Object3D, sm?: ScriptManager) {
-    if (orbit instanceof Object3D || targets instanceof ScriptManager || scene === undefined || sm === undefined) {
+  constructor(
+    orbit: OrbitControls | Object3D,
+    targets: CameraTarget[] | ScriptManager,
+    scene?: Object3D,
+    sm?: ScriptManager
+  ) {
+    if (
+      orbit instanceof Object3D ||
+      targets instanceof ScriptManager ||
+      scene === undefined ||
+      sm === undefined
+    ) {
       throw "Constructor should be called with all parameters.";
     }
-    super(scene, sm)
+    super(scene, sm);
     this.orbit = orbit;
     this.targets = targets;
     this.currentTarget = this.targets[0];
@@ -69,10 +83,10 @@ export class OrbitScript extends Script {
       this.currentTarget.object.getWorldPosition(camera.position);
       this.currentTarget.object.getWorldQuaternion(camera.quaternion);
     }
-    if (this.keyManager!.isKeyDown('P')) {
+    if (this.keyManager!.isKeyDown("P")) {
       this.zoom(-0.5);
     }
-    if (this.keyManager!.isKeyDown('O')) {
+    if (this.keyManager!.isKeyDown("O")) {
       this.zoom(0.5);
     }
   }

@@ -64,13 +64,12 @@ export class ShelfScript extends Script {
       ).position.setY(height - thickness / 2);
     }
 
-
     for (let row = 0; row < cellRows; row++) {
       for (let col = 0; col < cellCols; col++) {
         const cell = new Object3D();
         cell.position.setX((col - cellCols / 2 + 0.5) * cellWidth);
         cell.position.setY(row * cellHeight);
-        cell.name = 'shelf-cell'
+        cell.name = "shelf-cell";
         obj.add(cell);
       }
     }

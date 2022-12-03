@@ -1,4 +1,4 @@
-import {Key, Script} from "./script";
+import { Key, Script } from "./script";
 
 export class KeyManager extends Script {
   pressedKeys: Set<Key> = new Set();
@@ -15,4 +15,3 @@ export class KeyManager extends Script {
     return this.pressedKeys.has(key);
   }
 }
-

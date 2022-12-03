@@ -5,10 +5,10 @@ import * as OBJECTS from "./objects";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { setupGui } from "./gui";
 import { Printer } from "./scripts/printer";
-import {Root} from "./scripts/root";
+import { Root } from "./scripts/root";
 import config from "./config";
-import {generateShape, SweepModelGenerator} from "./generator";
-import {OrbitScript} from "./scripts/orbit";
+import { generateShape, SweepModelGenerator } from "./generator";
+import { OrbitScript } from "./scripts/orbit";
 
 setupGui((generator) => {
   const script = scriptManager.ofType<Printer>(Printer)!;
@@ -59,10 +59,7 @@ window.addEventListener("resize", onWindowResize);
 let scriptManager = new ScriptManager();
 scriptManager.setupEventListeners();
 
-scriptManager.addScript(
-  Root.bind(null, orbit),
-  scene
-);
+scriptManager.addScript(Root.bind(null, orbit), scene);
 
 scriptManager.dispatchInit();
 

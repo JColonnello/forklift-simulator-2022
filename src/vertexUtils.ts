@@ -1,8 +1,11 @@
-import {BufferGeometry, Vector3} from "three";
+import { BufferGeometry, Vector3 } from "three";
 
-export function mergeVertices(geometry: BufferGeometry, presicionDigits = 3): BufferGeometry {
-  const position = geometry.getAttribute('position');
-  const normal = geometry.getAttribute('normal');
+export function mergeVertices(
+  geometry: BufferGeometry,
+  presicionDigits = 3
+): BufferGeometry {
+  const position = geometry.getAttribute("position");
+  const normal = geometry.getAttribute("normal");
   const indices = geometry.getIndex();
 
   const map = new Map();
@@ -26,11 +29,11 @@ export function mergeVertices(geometry: BufferGeometry, presicionDigits = 3): Bu
     p.set(
       position.array[i * position.itemSize + 0],
       position.array[i * position.itemSize + 1],
-      position.array[i * position.itemSize + 2],
+      position.array[i * position.itemSize + 2]
     );
 
     const posHash = getVecHash(p);
-    
+
     const newIndex = map.get(posHash);
     if (newIndex === undefined) {
       map.set(posHash, i);
@@ -44,7 +47,7 @@ export function mergeVertices(geometry: BufferGeometry, presicionDigits = 3): Bu
   if (indices !== null) {
     for (let i = 0; i < indices.count; i++) {
       let index = indices.array[i];
-      
+
       newIndices.push(indexMap.get(index));
     }
   } else {
@@ -52,7 +55,7 @@ export function mergeVertices(geometry: BufferGeometry, presicionDigits = 3): Bu
       p.set(
         position.array[i * position.itemSize + 0],
         position.array[i * position.itemSize + 1],
-        position.array[i * position.itemSize + 2],
+        position.array[i * position.itemSize + 2]
       );
 
       const posHash = getVecHash(p);
@@ -60,6 +63,6 @@ export function mergeVertices(geometry: BufferGeometry, presicionDigits = 3): Bu
     }
   }
   geometry.setIndex(newIndices);
-  
+
   return geometry;
 }

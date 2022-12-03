@@ -1,5 +1,16 @@
 import { GUI } from "dat.gui";
-import { generateShape, ModelGenerator, RevolveModelGenerator, RevolveShape, revolveShapes, SolidType, solidTypes, SweepModelGenerator, SweepShape, sweepShapes } from "./generator";
+import {
+  generateShape,
+  ModelGenerator,
+  RevolveModelGenerator,
+  RevolveShape,
+  revolveShapes,
+  SolidType,
+  solidTypes,
+  SweepModelGenerator,
+  SweepShape,
+  sweepShapes,
+} from "./generator";
 
 let printOptions: {
   type: SolidType;
@@ -42,19 +53,32 @@ export function setupGui(startPring: (generator: ModelGenerator) => void) {
   sweepFolder.add(printOptions, "torsionAngle", 0, 360, 1).name("Torsion");
   sweepFolder.add(printOptions, "height", 0, 2).name("Height");
   sweepFolder.open();
-  gui.add({ button: () => {
-    let modelLayerGenerator;
-    switch (printOptions.type) {
-      case "Sweep":
-        modelLayerGenerator = new SweepModelGenerator(generateShape(printOptions.sweepShape), printOptions.torsionAngle, printOptions.height);
-        break;
-      case "Revolve":
-        modelLayerGenerator = new RevolveModelGenerator(generateShape(printOptions.revolveShape));
-        break;
-    }
+  gui
+    .add(
+      {
+        button: () => {
+          let modelLayerGenerator;
+          switch (printOptions.type) {
+            case "Sweep":
+              modelLayerGenerator = new SweepModelGenerator(
+                generateShape(printOptions.sweepShape),
+                printOptions.torsionAngle,
+                printOptions.height
+              );
+              break;
+            case "Revolve":
+              modelLayerGenerator = new RevolveModelGenerator(
+                generateShape(printOptions.revolveShape)
+              );
+              break;
+          }
 
-    startPring(modelLayerGenerator);
-  } }, "button").name("Generate");
+          startPring(modelLayerGenerator);
+        },
+      },
+      "button"
+    )
+    .name("Generate");
   gui.open();
 
   setSolidType(solidType.getValue());

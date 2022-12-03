@@ -1,8 +1,8 @@
 import { Euler, Object3D, Vector3 } from "three";
-import {EyeScript} from "./eye";
+import { EyeScript } from "./eye";
 import { KeyManager } from "./keyManager";
 import { Key, Script } from "./script";
-import {TrayScript} from "./tray";
+import { TrayScript } from "./tray";
 
 const forward: Key = "W";
 const back: Key = "S";
@@ -22,29 +22,28 @@ export class ForkliftScript extends Script {
   speed = 0;
   steeringPosition = 0;
 
-  
-  public get frontRightWheel() : Object3D {
+  public get frontRightWheel(): Object3D {
     return this.object.getObjectByName("front-right")!;
   }
-  
-  public get frontLeftWheel() : Object3D {
+
+  public get frontLeftWheel(): Object3D {
     return this.object.getObjectByName("front-left")!;
   }
-  
-  public get backRightWheel() : Object3D {
+
+  public get backRightWheel(): Object3D {
     return this.object.getObjectByName("back-right")!;
   }
-  
-  public get backLeftWheel() : Object3D {
+
+  public get backLeftWheel(): Object3D {
     return this.object.getObjectByName("back-left")!;
   }
 
   get childrenScripts() {
     return {
       tray: TrayScript,
-      'left-eye': EyeScript,
-      'right-eye': EyeScript,
-    }
+      "left-eye": EyeScript,
+      "right-eye": EyeScript,
+    };
   }
 
   init(): void {
@@ -58,7 +57,11 @@ export class ForkliftScript extends Script {
   update(dt: number): void {
     let fwTrust = this.isKeyDown(forward) ? 1 : this.isKeyDown(back) ? -1 : 0;
 
-    let steeringPosition = this.isKeyDown(right) ? 1 : this.isKeyDown(left) ? -1 : 0;
+    let steeringPosition = this.isKeyDown(right)
+      ? 1
+      : this.isKeyDown(left)
+      ? -1
+      : 0;
     this.steeringPosition += (steeringPosition - this.steeringPosition) * 0.1;
 
     this.speed += fwTrust * acceleration * dt;
@@ -77,17 +80,24 @@ export class ForkliftScript extends Script {
     this.angle += this.speed * this.steeringPosition * maxTurnSpeed * dt;
 
     let direction = new Vector3(0, 0, -1);
-    direction.applyEuler(new Euler(0, -this.angle, 0))
+    direction.applyEuler(new Euler(0, -this.angle, 0));
     this.object.position.addScaledVector(direction, this.speed * dt);
-    this.object.rotation.set(0, -this.angle, 0)
+    this.object.rotation.set(0, -this.angle, 0);
 
-    this.object.position.clamp(new Vector3(-4, 0, -4), new Vector3(4, 0, 4))
+    this.object.position.clamp(new Vector3(-4, 0, -4), new Vector3(4, 0, 4));
 
     const steeringMultiplier = 0.3;
-    this.frontRightWheel.rotation.y = -this.steeringPosition * steeringMultiplier;
-    this.frontLeftWheel.rotation.y = -this.steeringPosition * steeringMultiplier;
+    this.frontRightWheel.rotation.y =
+      -this.steeringPosition * steeringMultiplier;
+    this.frontLeftWheel.rotation.y =
+      -this.steeringPosition * steeringMultiplier;
 
-    const wheels = [this.frontLeftWheel, this.frontRightWheel, this.backLeftWheel, this.backRightWheel];
+    const wheels = [
+      this.frontLeftWheel,
+      this.frontRightWheel,
+      this.backLeftWheel,
+      this.backRightWheel,
+    ];
     for (const wheel of wheels) {
       wheel.rotateX(this.speed * -0.01);
     }

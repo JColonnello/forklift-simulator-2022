@@ -1,5 +1,5 @@
 import { Object3D } from "three";
-import {ScriptManager, ScriptMap} from "./scriptManager";
+import { ScriptManager, ScriptMap } from "./scriptManager";
 
 export const keys = [
   "Q",

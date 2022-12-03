@@ -1,24 +1,34 @@
-import { DoubleSide, Mesh, MeshStandardMaterial, Object3D, Plane, Vector3 } from "three";
+import {
+  DoubleSide,
+  Mesh,
+  MeshStandardMaterial,
+  Object3D,
+  Plane,
+  Vector3,
+} from "three";
 //import { MeshNormalMaterial } from "three";
 //import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
 import { ModelGenerator } from "../generator";
 import { Script } from "./script";
 
 enum PrintingStage {
-  PRINTING = 'PRINTING',
-  RESETTING = 'RESETTING',
-  DONE = 'DONE',
+  PRINTING = "PRINTING",
+  RESETTING = "RESETTING",
+  DONE = "DONE",
 }
 
-type PrinterState = {
-  stage: PrintingStage.DONE
-} | {
-  stage: PrintingStage.PRINTING,
-  progress: number
-} | {
-  stage: PrintingStage.RESETTING,
-  progress: number
-};
+type PrinterState =
+  | {
+      stage: PrintingStage.DONE;
+    }
+  | {
+      stage: PrintingStage.PRINTING;
+      progress: number;
+    }
+  | {
+      stage: PrintingStage.RESETTING;
+      progress: number;
+    };
 
 function getObjectSingleMaterial(object: Mesh) {
   const material = object.material;
@@ -34,7 +44,7 @@ export class Printer extends Script {
   #headOffset?: Object3D;
   static printScale = 0.3;
   static speed = 0.5;
-  state: PrinterState = {stage: PrintingStage.DONE};
+  state: PrinterState = { stage: PrintingStage.DONE };
   lastPieceHeight: number = 1;
 
   get platform(): Object3D {
@@ -50,17 +60,17 @@ export class Printer extends Script {
   }
 
   get printingObject(): Mesh {
-    return this.object.getObjectByName('printing-object') as Mesh;
+    return this.object.getObjectByName("printing-object") as Mesh;
   }
 
   get printedObject(): Mesh {
-    return this.object.getObjectByName('printed-object') as Mesh;
+    return this.object.getObjectByName("printed-object") as Mesh;
   }
 
   init(): void {
-    this.#platform = this.object.getObjectByName('printer-platform');
-    this.#head = this.object.getObjectByName('printer-head') as Mesh;
-    this.#headOffset = this.object.getObjectByName('printer-head-offset');
+    this.#platform = this.object.getObjectByName("printer-platform");
+    this.#head = this.object.getObjectByName("printer-head") as Mesh;
+    this.#headOffset = this.object.getObjectByName("printer-head-offset");
   }
 
   removePrintingObject() {
@@ -81,7 +91,7 @@ export class Printer extends Script {
               this.finishObject();
               break;
             case PrintingStage.RESETTING:
-              this.state = {stage: PrintingStage.DONE};
+              this.state = { stage: PrintingStage.DONE };
               break;
           }
         }
@@ -91,9 +101,10 @@ export class Printer extends Script {
     if (this.state.stage == PrintingStage.PRINTING) {
       const up = new Vector3(0, -1, 0);
       const clippingPlane = new Plane(up, 0);
-      getObjectSingleMaterial(this.printingObject).clippingPlanes[0].copy(clippingPlane).applyMatrix4(this.head.matrixWorld);
+      getObjectSingleMaterial(this.printingObject)
+        .clippingPlanes[0].copy(clippingPlane)
+        .applyMatrix4(this.head.matrixWorld);
     }
-
 
     let height = 0;
     switch (this.state.stage) {
@@ -115,10 +126,10 @@ export class Printer extends Script {
   finishObject() {
     const printingObject: Mesh = this.printingObject!;
     printingObject.removeFromParent();
-    printingObject.name = 'printed-object';
+    printingObject.name = "printed-object";
     getObjectSingleMaterial(printingObject).clippingPlanes = [];
     this.platform.add(printingObject);
-    this.state = {stage: PrintingStage.RESETTING, progress: 0};
+    this.state = { stage: PrintingStage.RESETTING, progress: 0 };
   }
 
   print(modelGenerator: ModelGenerator) {
@@ -136,22 +147,22 @@ export class Printer extends Script {
 
     this.removePrintingObject();
     const material = new MeshStandardMaterial({
-      color: 0xFF6600, 
-      side: DoubleSide, 
-      clippingPlanes: [new Plane()], 
+      color: 0xff6600,
+      side: DoubleSide,
+      clippingPlanes: [new Plane()],
       //wireframe: true,
       //flatShading: true,
     });
     //const material = new MeshNormalMaterial({
-      //side: DoubleSide,
-      //clippingPlanes: [new Plane()],
+    //side: DoubleSide,
+    //clippingPlanes: [new Plane()],
     //});
     const obj = new Mesh(geometry, material);
-    
+
     this.headOffset.position.y = -height;
     obj.scale.setScalar(Printer.printScale);
-    obj.name = 'printing-object';
-    this.state = {stage: PrintingStage.PRINTING, progress: 0};
+    obj.name = "printing-object";
+    this.state = { stage: PrintingStage.PRINTING, progress: 0 };
     // obj.name = 'printed-object';
     this.platform.add(obj);
   }

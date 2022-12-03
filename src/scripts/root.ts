@@ -1,11 +1,10 @@
-import {Object3D} from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {KeyManager} from "./keyManager";
-import {OrbitScript} from "./orbit";
-import {RoomScript} from "./scene";
+import { Object3D } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { KeyManager } from "./keyManager";
+import { OrbitScript } from "./orbit";
+import { RoomScript } from "./scene";
 import { Script } from "./script";
-import {ScriptManager} from "./scriptManager";
-
+import { ScriptManager } from "./scriptManager";
 
 export class Root extends Script {
   targets = [
@@ -25,10 +24,20 @@ export class Root extends Script {
 
   get childrenScripts() {
     return {
-      scripts: [KeyManager, OrbitScript.bind(null, this.orbit, this.targets.map(({objectName, orbit}) => ({object: this.object.getObjectByName(objectName)!, orbit})))],
+      scripts: [
+        KeyManager,
+        OrbitScript.bind(
+          null,
+          this.orbit,
+          this.targets.map(({ objectName, orbit }) => ({
+            object: this.object.getObjectByName(objectName)!,
+            orbit,
+          }))
+        ),
+      ],
       children: {
-        room: RoomScript
-      }
+        room: RoomScript,
+      },
     };
   }
 }

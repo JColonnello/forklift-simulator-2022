@@ -26,7 +26,10 @@ export class TrayScript extends Script {
 
     if (showTreshold) {
       const geo = new THREE.SphereGeometry(distanceTreshold);
-      const mat = new THREE.MeshStandardMaterial({opacity: 0.2, transparent: true});
+      const mat = new THREE.MeshStandardMaterial({
+        opacity: 0.2,
+        transparent: true,
+      });
       const mesh = new THREE.Mesh(geo, mat);
       this.object.add(mesh);
     }
@@ -51,7 +54,10 @@ export class TrayScript extends Script {
     return this.sceneScript!.getAllObjectByName("printed-object");
   }
 
-  getClosestObjectInRange(objects: Object3D[], maximumDistance: number): Object3D | null {
+  getClosestObjectInRange(
+    objects: Object3D[],
+    maximumDistance: number
+  ): Object3D | null {
     const worldPos = this.object.getWorldPosition(new Vector3());
     let closest: { object?: Object3D; distance?: number } = {
       object: undefined,
@@ -80,7 +86,9 @@ export class TrayScript extends Script {
   }
 
   drop() {
-    const cells = this.getShelfCellObjects().filter(c => c.children.length == 0);
+    const cells = this.getShelfCellObjects().filter(
+      (c) => c.children.length == 0
+    );
     const object = this.getClosestObjectInRange(cells, distanceTreshold);
     if (object != null) {
       this.holding!.removeFromParent();
@@ -91,7 +99,10 @@ export class TrayScript extends Script {
 
   grabOrDrop() {
     if (this.holding == null) {
-      const object = this.getClosestObjectInRange(this.getPrintedObjects(), distanceTreshold);
+      const object = this.getClosestObjectInRange(
+        this.getPrintedObjects(),
+        distanceTreshold
+      );
       if (object != null) {
         this.grab(object);
       }
