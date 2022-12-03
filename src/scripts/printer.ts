@@ -136,7 +136,7 @@ export class Printer extends Script {
     this.state = { stage: PrintingStage.RESETTING, progress: 0 };
   }
 
-  print(modelGenerator: ModelGenerator) {
+  print(modelGenerator: ModelGenerator, textureName: string) {
     const printingObject = this.printingObject;
     if (printingObject !== undefined) {
       printingObject.removeFromParent();
@@ -150,7 +150,7 @@ export class Printer extends Script {
     this.lastPieceHeight = height;
 
     this.removePrintingObject();
-    const texture = loadTexture("Pattern05_1K_VarB.png");
+    const texture = loadTexture(textureName);
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
     texture.repeat = new Vector2(4, 4);

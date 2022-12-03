@@ -10,9 +10,9 @@ import config from "./config";
 import { generateShape, SweepModelGenerator } from "./generator";
 import { OrbitScript } from "./scripts/orbit";
 
-setupGui((generator) => {
+setupGui((generator, texture) => {
   const script = scriptManager.ofType<Printer>(Printer)!;
-  script?.print(generator);
+  script?.print(generator, texture);
 });
 
 const scene = new THREE.Scene();
@@ -65,7 +65,7 @@ scriptManager.dispatchInit();
 
 if (config.printerTesting) {
   const printer = scriptManager.ofType<Printer>(Printer)!;
-  printer.print(new SweepModelGenerator(generateShape("B1"), 180, 1));
+  printer.print(new SweepModelGenerator(generateShape("B1"), 180, 1), "Pattern05_1K_VarA.png");
 
   const orbit = scriptManager.ofType<OrbitScript>(OrbitScript)!;
   orbit.setCurrentCamera(1);
