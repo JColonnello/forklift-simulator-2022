@@ -268,13 +268,13 @@ function addForklift(scene2) {
   function addWheel(name, x, y) {
     const geometry2 = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 10, 1, true);
     geometry2.rotateZ(Math.PI / 2);
-    const material22 = new THREE.MeshStandardMaterial({ color: 2236962, wireframe: false });
+    const material22 = new THREE.MeshPhongMaterial({ color: 2763056, wireframe: false });
     const wheel = new THREE.Mesh(geometry2, material22);
     function addCap(side) {
       const capGeometry = new THREE.CircleGeometry(geometry2.parameters.radiusTop, geometry2.parameters.radialSegments);
       capGeometry.rotateY(side * Math.PI / 2);
       capGeometry.translate(side * geometry2.parameters.height / 2, 0, 0);
-      const capMaterial = new THREE.MeshStandardMaterial({ map: wheelTexture, wireframe: false });
+      const capMaterial = new THREE.MeshPhongMaterial({ map: wheelTexture });
       const cap = new THREE.Mesh(capGeometry, capMaterial);
       wheel.add(cap);
     }
