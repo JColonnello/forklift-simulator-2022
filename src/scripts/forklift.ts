@@ -99,7 +99,8 @@ export class ForkliftScript extends Script {
       this.backRightWheel,
     ];
     for (const wheel of wheels) {
-      wheel.rotateX(this.speed * -0.01);
+      const rad = wheel.geometry.parameters.radiusTop;
+      wheel.rotateX(-(this.speed * dt) / rad);
     }
   }
 }

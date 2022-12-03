@@ -31,7 +31,8 @@ export function addForklift(scene: Object3D) {
 
   function addWheel(name: string, x: number, y: number) {
     //const geometry = new THREE.BoxGeometry(0.2, 0.5, 0.5);
-    const geometry = new THREE.CylinderGeometry(0.25, 0.25, 0.2, 10, 1, true);
+    const wheelRadius = 0.25;
+    const geometry = new THREE.CylinderGeometry(wheelRadius, wheelRadius, 0.2, 10, 1, true);
     geometry.rotateZ(Math.PI / 2);
 
     const material = new THREE.MeshPhongMaterial({
@@ -54,7 +55,7 @@ export function addForklift(scene: Object3D) {
 
     addCap(-1);
     addCap(1);
-    wheel.position.set(x * 0.4, 0.25, y * -0.4);
+    wheel.position.set(x * 0.4, wheelRadius, y * -0.4);
     wheel.name = name;
     wheel.rotation.order = "ZYX";
     obj.add(wheel);
