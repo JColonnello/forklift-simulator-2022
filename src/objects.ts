@@ -1,11 +1,7 @@
 import * as THREE from "three";
 import { Object3D, RepeatWrapping, Scene, Vector2, Wrapping } from "three";
+import {loadTexture} from "./textures";
 
-const textureLoader = new THREE.TextureLoader();
-
-function loadTexture(name: string) {
-  return textureLoader.load(`assets/textures/${name}`);
-}
 
 export function addForklift(scene: Object3D) {
   let obj = new Object3D();

@@ -1,14 +1,18 @@
 import {
   DoubleSide,
   Mesh,
+  MeshPhongMaterial,
   MeshStandardMaterial,
   Object3D,
   Plane,
+  RepeatWrapping,
+  Vector2,
   Vector3,
 } from "three";
 //import { MeshNormalMaterial } from "three";
 //import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils";
 import { ModelGenerator } from "../generator";
+import { loadTexture } from "../textures";
 import { Script } from "./script";
 
 enum PrintingStage {
@@ -146,8 +150,13 @@ export class Printer extends Script {
     this.lastPieceHeight = height;
 
     this.removePrintingObject();
-    const material = new MeshStandardMaterial({
-      color: 0xff6600,
+    const texture = loadTexture("Pattern05_1K_VarB.png");
+    texture.wrapS = RepeatWrapping;
+    texture.wrapT = RepeatWrapping;
+    texture.repeat = new Vector2(4, 4);
+    const material = new MeshPhongMaterial({
+      //color: 0xff6600,
+      map: texture,
       side: DoubleSide,
       clippingPlanes: [new Plane()],
       //wireframe: true,
