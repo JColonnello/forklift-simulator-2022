@@ -343,8 +343,8 @@ export class RevolveModelGenerator extends ModelGenerator {
 
   generate(): BufferGeometry {
     const shanpe = this.shape.generate();
-    const points = shanpe.extractPoints(50);
-    const geometry = new LatheGeometry(points.shape);
+    const points = shanpe.getSpacedPoints(50);
+    const geometry = new LatheGeometry(points);
 
     return geometry;
   }

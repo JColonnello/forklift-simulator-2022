@@ -66,8 +66,8 @@ export function mergeVertices(
         position.array[i * position.itemSize + 2]
       );
       t.set(
-        uv.array[i * position.itemSize + 0],
-        uv.array[i * position.itemSize + 1]
+        uv.array[i * uv.itemSize + 0],
+        uv.array[i * uv.itemSize + 1]
       )
 
       const posHash = getVecHash(p, t);
