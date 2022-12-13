@@ -293,9 +293,9 @@ export class SweepModelGenerator extends ModelGenerator {
   generate(): BufferGeometry {
     const shanpe = this.shape.generate();
     const extrudeSettings: ExtrudeGeometryOptions = {
-      depth: this.#height,
+      depth: this.#height * 2,
       bevelEnabled: true,
-      bevelSize: 0.03,
+      bevelSize: 0.001,
       bevelOffset: 0,
       bevelThickness: 0.01,
       bevelSegments: 2,
@@ -322,7 +322,7 @@ export class SweepModelGenerator extends ModelGenerator {
     vertices.needsUpdate = true;
     //Rotate to extrude upwards
     geometry.rotateX(-Math.PI / 2);
-    geometry.scale(0.5, 1, 0.5);
+    geometry.scale(0.5, 0.5, 0.5);
 
     return geometry;
   }
