@@ -560,13 +560,16 @@ function addCameras(scene2) {
 function mergeVertices(geometry, presicionDigits = 3) {
   const position = geometry.getAttribute("position");
   const normal = geometry.getAttribute("normal");
+  const uv = geometry.getAttribute("uv");
   const indices = geometry.getIndex();
   const map = /* @__PURE__ */ new Map();
-  function getVecHash(v) {
-    const x = v.x.toFixed(presicionDigits);
-    const y = v.y.toFixed(presicionDigits);
-    const z = v.z.toFixed(presicionDigits);
-    return `${x},${y},${z}`;
+  function getVecHash(p2, t2) {
+    const x = p2.x.toFixed(presicionDigits);
+    const y = p2.y.toFixed(presicionDigits);
+    const z = p2.z.toFixed(presicionDigits);
+    const u = t2.x.toFixed(presicionDigits);
+    const v = t2.y.toFixed(presicionDigits);
+    return `${x},${y},${z},${u},${v}`;
   }
   if (position.count != normal.count) {
     throw "There should be the same amount of positions as normals";
@@ -574,13 +577,18 @@ function mergeVertices(geometry, presicionDigits = 3) {
   const count = position.count;
   const indexMap = /* @__PURE__ */ new Map();
   const p = new Vector3();
+  const t = new Vector2();
   for (let i = 0; i < count; i++) {
     p.set(
       position.array[i * position.itemSize + 0],
       position.array[i * position.itemSize + 1],
       position.array[i * position.itemSize + 2]
     );
-    const posHash = getVecHash(p);
+    t.set(
+      uv.array[i * uv.itemSize + 0],
+      uv.array[i * uv.itemSize + 1]
+    );
+    const posHash = getVecHash(p, t);
     const newIndex = map.get(posHash);
     if (newIndex === void 0) {
       map.set(posHash, i);
@@ -600,7 +608,11 @@ function mergeVertices(geometry, presicionDigits = 3) {
         position.array[i * position.itemSize + 1],
         position.array[i * position.itemSize + 2]
       );
-      const posHash = getVecHash(p);
+      t.set(
+        uv.array[i * uv.itemSize + 0],
+        uv.array[i * uv.itemSize + 1]
+      );
+      const posHash = getVecHash(p, t);
       newIndices.push(map.get(posHash));
     }
   }
@@ -760,10 +772,10 @@ function generateShape(shapeType) {
           __publicField(this, "canRevolve", false);
           __publicField(this, "generate", () => {
             let shape = new ShapeWithSubdividedLines();
-            shape.moveTo(Math.cos(Math.PI / 3), Math.sin(Math.PI / 3));
-            shape.lineTo(Math.cos(Math.PI), Math.sin(Math.PI));
-            shape.lineTo(Math.cos(-Math.PI / 3), Math.sin(-Math.PI / 3));
-            shape.lineTo(Math.cos(Math.PI / 3), Math.sin(Math.PI / 3));
+            shape.moveTo(Math.cos(Math.PI / 3) / 2, Math.sin(Math.PI / 3) / 2);
+            shape.lineTo(Math.cos(Math.PI) / 2, Math.sin(Math.PI) / 2);
+            shape.lineTo(Math.cos(-Math.PI / 3) / 2, Math.sin(-Math.PI / 3) / 2);
+            shape.lineTo(Math.cos(Math.PI / 3) / 2, Math.sin(Math.PI / 3) / 2);
             return shape;
           });
         }
@@ -776,14 +788,14 @@ function generateShape(shapeType) {
           __publicField(this, "generate", () => {
             let shape = new ShapeWithSubdividedLines();
             let ang = 0;
-            shape.moveTo(Math.cos(ang), Math.sin(ang));
+            shape.moveTo(Math.cos(ang) / 2, Math.sin(ang) / 2);
             for (let i = 1; i < 7 * 2; ) {
               ang = Math.PI / 7 * i++;
               const p1 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(
-                0.6
+                0.3
               );
               ang = Math.PI / 7 * i++;
-              const p2 = new Vector2(Math.cos(ang), Math.sin(ang));
+              const p2 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(0.5);
               shape.splineThru([p1, p2]);
             }
             return shape;
@@ -797,12 +809,12 @@ function generateShape(shapeType) {
           __publicField(this, "canRevolve", false);
           __publicField(this, "generate", () => {
             let shape = new ShapeWithSubdividedLines();
-            shape.moveTo(0.3, 0.5);
+            shape.moveTo(0.15, 0.25);
             let vectors = [
-              new Vector2(-0.3, 0.5),
-              new Vector2(-0.3, 1),
-              new Vector2(-0.7, 1),
-              new Vector2(-0.9, 0.9)
+              new Vector2(-0.15, 0.25),
+              new Vector2(-0.15, 0.5),
+              new Vector2(-0.35, 0.5),
+              new Vector2(-0.45, 0.45)
             ];
             vectors = mirrorVertices(vectors, new Vector2(1, 1));
             const center = new Vector2(0, 0);
@@ -828,18 +840,18 @@ function generateShape(shapeType) {
           __publicField(this, "canRevolve", false);
           __publicField(this, "generate", () => {
             let shape = new ShapeWithSubdividedLines();
-            shape.moveTo(0.5, -0.65);
-            shape.lineTo(0.5, 0.65);
-            let v = new Vector2(0.5, 0.65);
-            let center = new Vector2(0, 0.65);
+            shape.moveTo(0.25, -0.325);
+            shape.lineTo(0.25, 0.325);
+            let v = new Vector2(0.25, 0.325);
+            let center = new Vector2(0, 0.325);
             shape.splineThru(
               new Array(5).fill(0).map(
                 (_, i, a) => v.clone().rotateAround(center, Math.PI / a.length * (i + 1))
               )
             );
-            shape.lineTo(-0.5, -0.65);
-            v = new Vector2(-0.5, -0.65);
-            center = new Vector2(0, -0.65);
+            shape.lineTo(-0.25, -0.325);
+            v = new Vector2(-0.25, -0.325);
+            center = new Vector2(0, -0.325);
             shape.splineThru(
               new Array(5).fill(0).map(
                 (_, i, a) => v.clone().rotateAround(center, Math.PI / a.length * (i + 1))
@@ -868,7 +880,7 @@ class SweepModelGenerator extends ModelGenerator {
     const extrudeSettings = {
       depth: __privateGet(this, _height),
       bevelEnabled: true,
-      bevelSize: 0.03,
+      bevelSize: 1e-3,
       bevelOffset: 0,
       bevelThickness: 0.01,
       bevelSegments: 2,
@@ -891,7 +903,6 @@ class SweepModelGenerator extends ModelGenerator {
     }
     vertices.needsUpdate = true;
     geometry.rotateX(-Math.PI / 2);
-    geometry.scale(0.5, 1, 0.5);
     return geometry;
   }
   get height() {
@@ -909,8 +920,8 @@ class RevolveModelGenerator extends ModelGenerator {
   }
   generate() {
     const shanpe = this.shape.generate();
-    const points = shanpe.extractPoints(50);
-    const geometry = new LatheGeometry(points.shape);
+    const points = shanpe.getSpacedPoints(50);
+    const geometry = new LatheGeometry(points);
     return geometry;
   }
   get height() {
@@ -1113,7 +1124,7 @@ const _Printer = class extends Script {
     const texture = loadTexture(textureName);
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
-    texture.repeat = new Vector2(4, 4);
+    texture.repeat = new Vector2(8, 8);
     const material2 = new MeshPhongMaterial({
       map: texture,
       side: DoubleSide,
