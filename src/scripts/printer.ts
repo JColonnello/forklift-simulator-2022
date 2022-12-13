@@ -152,7 +152,7 @@ export class Printer extends Script {
     const texture = loadTexture(textureName);
     texture.wrapS = RepeatWrapping;
     texture.wrapT = RepeatWrapping;
-    texture.repeat = new Vector2(4, 4);
+    texture.repeat = new Vector2(8, 8);
     const material = new MeshPhongMaterial({
       //color: 0xff6600,
       map: texture,

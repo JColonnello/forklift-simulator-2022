@@ -181,10 +181,10 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         canRevolve = false;
         generate = () => {
           let shape = new ShapeWithSubdividedLines();
-          shape.moveTo(Math.cos(Math.PI / 3), Math.sin(Math.PI / 3));
-          shape.lineTo(Math.cos(Math.PI), Math.sin(Math.PI));
-          shape.lineTo(Math.cos(-Math.PI / 3), Math.sin(-Math.PI / 3));
-          shape.lineTo(Math.cos(Math.PI / 3), Math.sin(Math.PI / 3));
+          shape.moveTo(Math.cos(Math.PI / 3) / 2, Math.sin(Math.PI / 3) / 2);
+          shape.lineTo(Math.cos(Math.PI) / 2, Math.sin(Math.PI) / 2);
+          shape.lineTo(Math.cos(-Math.PI / 3) / 2, Math.sin(-Math.PI / 3) / 2);
+          shape.lineTo(Math.cos(Math.PI / 3) / 2, Math.sin(Math.PI / 3) / 2);
           return shape as Shape;
         };
       })();
@@ -196,14 +196,14 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         generate = () => {
           let shape = new ShapeWithSubdividedLines();
           let ang = 0;
-          shape.moveTo(Math.cos(ang), Math.sin(ang));
+          shape.moveTo(Math.cos(ang) / 2, Math.sin(ang) / 2);
           for (let i = 1; i < 7 * 2; ) {
             ang = (Math.PI / 7) * i++;
             const p1 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(
-              0.6
+              0.3
             );
             ang = (Math.PI / 7) * i++;
-            const p2 = new Vector2(Math.cos(ang), Math.sin(ang));
+            const p2 = new Vector2(Math.cos(ang), Math.sin(ang)).multiplyScalar(0.5);
             shape.splineThru([p1, p2]);
           }
           return shape as Shape;
@@ -216,12 +216,12 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         canRevolve = false;
         generate = () => {
           let shape = new ShapeWithSubdividedLines();
-          shape.moveTo(0.3, 0.5);
+          shape.moveTo(0.15, 0.25);
           let vectors = [
-            new Vector2(-0.3, 0.5),
-            new Vector2(-0.3, 1),
-            new Vector2(-0.7, 1),
-            new Vector2(-0.9, 0.9),
+            new Vector2(-0.15, 0.25),
+            new Vector2(-0.15, 0.5),
+            new Vector2(-0.35, 0.5),
+            new Vector2(-0.45, 0.45),
             // new Vector2(-1, 0.7),
             // new Vector2(-1, 0.3),
             // new Vector2(-0.5, 0.3),
@@ -249,10 +249,10 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
         canRevolve = false;
         generate = () => {
           let shape = new ShapeWithSubdividedLines();
-          shape.moveTo(0.5, -0.65);
-          shape.lineTo(0.5, 0.65);
-          let v = new Vector2(0.5, 0.65);
-          let center = new Vector2(0, 0.65);
+          shape.moveTo(0.25, -0.325);
+          shape.lineTo(0.25, 0.325);
+          let v = new Vector2(0.25, 0.325);
+          let center = new Vector2(0, 0.325);
 
           shape.splineThru(
             new Array(5)
@@ -261,9 +261,9 @@ export function generateShape(shapeType: SweepShape | RevolveShape): BaseShape {
                 v.clone().rotateAround(center, (Math.PI / a.length) * (i + 1))
               )
           );
-          shape.lineTo(-0.5, -0.65);
-          v = new Vector2(-0.5, -0.65);
-          center = new Vector2(0, -0.65);
+          shape.lineTo(-0.25, -0.325);
+          v = new Vector2(-0.25, -0.325);
+          center = new Vector2(0, -0.325);
           shape.splineThru(
             new Array(5)
               .fill(0)
@@ -293,7 +293,7 @@ export class SweepModelGenerator extends ModelGenerator {
   generate(): BufferGeometry {
     const shanpe = this.shape.generate();
     const extrudeSettings: ExtrudeGeometryOptions = {
-      depth: this.#height * 2,
+      depth: this.#height,
       bevelEnabled: true,
       bevelSize: 0.001,
       bevelOffset: 0,
@@ -322,7 +322,6 @@ export class SweepModelGenerator extends ModelGenerator {
     vertices.needsUpdate = true;
     //Rotate to extrude upwards
     geometry.rotateX(-Math.PI / 2);
-    geometry.scale(0.5, 0.5, 0.5);
 
     return geometry;
   }
